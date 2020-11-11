@@ -1,0 +1,5 @@
+{
+  "MySqlSettings": {
+    "ConnectionString": "Host=localhost;Database=ftserver;Uid=root;Pwd=root;"
+  }
+}

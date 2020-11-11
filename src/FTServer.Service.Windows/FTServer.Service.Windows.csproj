@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-FantasyTennis.Server.WindowsService-CF3F5A68-7BBE-490E-B3A0-23C7B181811F</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="logging.settings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="logging.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.10" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FTServer.Authentication.Core\FTServer.Authentication.Core.csproj" />
+    <ProjectReference Include="..\FTServer.Database.MySql\FTServer.Database.MySql.csproj" />
+    <ProjectReference Include="..\FTServer.Game.Core\FTServer.Game.Core.csproj" />
+    <ProjectReference Include="..\FTServer.Relay.Core\FTServer.Relay.Core.csproj" />
+  </ItemGroup>
+</Project>
