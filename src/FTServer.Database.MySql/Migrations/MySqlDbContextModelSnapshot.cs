@@ -17,7 +17,7 @@ namespace FTServer.Database.MySql.Migrations
                 .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Account", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,12 +35,15 @@ namespace FTServer.Database.MySql.Migrations
                     b.Property<bool>("Enabled")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<byte>("SecurityLevel")
+                        .HasColumnType("tinyint unsigned");
+
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Character", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +134,23 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Furniture", b =>
+            modelBuilder.Entity("FTServer.Database.Model.DataSeed", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletionTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataSeeds");
+                });
+
+            modelBuilder.Entity("FTServer.Database.Model.Furniture", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,7 +187,7 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("Furniture");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Home", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Home", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,7 +218,7 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("Homes");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Item", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -233,7 +252,7 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Login", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Login", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -274,7 +293,7 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("Logins");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.LoginAttempt", b =>
+            modelBuilder.Entity("FTServer.Database.Model.LoginAttempt", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -302,7 +321,7 @@ namespace FTServer.Database.MySql.Migrations
                     b.ToTable("LoginAttempts");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.RelayServer", b =>
+            modelBuilder.Entity("FTServer.Database.Model.RelayServer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -343,9 +362,9 @@ namespace FTServer.Database.MySql.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("RelayServer");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.GameServer", b =>
+            modelBuilder.Entity("FTServer.Database.Model.GameServer", b =>
                 {
-                    b.HasBaseType("FTServer.Database.Core.Model.RelayServer");
+                    b.HasBaseType("FTServer.Database.Model.RelayServer");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -353,54 +372,54 @@ namespace FTServer.Database.MySql.Migrations
                     b.HasDiscriminator().HasValue("GameServer");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Character", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Character", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Account", "Account")
+                    b.HasOne("FTServer.Database.Model.Account", "Account")
                         .WithMany("Characters")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Furniture", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Furniture", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Home", "Home")
+                    b.HasOne("FTServer.Database.Model.Home", "Home")
                         .WithMany("Furniture")
                         .HasForeignKey("HomeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Home", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Home", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Character", "Character")
+                    b.HasOne("FTServer.Database.Model.Character", "Character")
                         .WithMany("Homes")
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Item", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Item", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Character", "Character")
+                    b.HasOne("FTServer.Database.Model.Character", "Character")
                         .WithMany("Items")
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.Login", b =>
+            modelBuilder.Entity("FTServer.Database.Model.Login", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Account", "Account")
+                    b.HasOne("FTServer.Database.Model.Account", "Account")
                         .WithMany("Logins")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FTServer.Database.Core.Model.LoginAttempt", b =>
+            modelBuilder.Entity("FTServer.Database.Model.LoginAttempt", b =>
                 {
-                    b.HasOne("FTServer.Database.Core.Model.Login", "Login")
+                    b.HasOne("FTServer.Database.Model.Login", "Login")
                         .WithMany()
                         .HasForeignKey("LoginId")
                         .OnDelete(DeleteBehavior.Cascade)

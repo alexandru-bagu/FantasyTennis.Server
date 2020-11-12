@@ -4,6 +4,7 @@ using FTServer.Database.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using FTServer.Contracts.Database;
 
 public static class IHostBuilderExtensions
 {

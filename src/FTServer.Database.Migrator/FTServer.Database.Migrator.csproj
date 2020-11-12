@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="logging.settings.json" />
+    <Content Remove="settings.logging.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="logging.settings.json">
+    <None Include="settings.logging.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FTServer.Contracts\FTServer.Contracts.csproj" />
     <ProjectReference Include="..\FTServer.Database.MySql\FTServer.Database.MySql.csproj" />
   </ItemGroup>
 </Project>

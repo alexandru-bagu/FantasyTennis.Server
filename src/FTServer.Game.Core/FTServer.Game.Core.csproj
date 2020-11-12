@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="game.settings.json" />
+    <Content Remove="settings.game.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="game.settings.json">
+    <None Include="settings.game.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

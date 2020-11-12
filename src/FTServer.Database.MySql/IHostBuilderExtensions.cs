@@ -9,7 +9,7 @@ public static class IHostBuilderExtensions
     {
         hostBuilder.ConfigureAppConfiguration((context, builder) =>
         {
-            builder.AddJsonFile("mysql.settings.json");
+            builder.AddJsonFile("settings.mysql.json");
         });
 
         return hostBuilder.UseDatabase<MySqlDbContext>((context, builder) =>

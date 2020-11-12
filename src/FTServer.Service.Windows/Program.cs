@@ -16,7 +16,7 @@ namespace FTServer.Service.Windows
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("logging.settings.json")
+                .AddJsonFile("settings.logging.json")
                 .Build();
 
             Log.Logger = new LoggerConfiguration()

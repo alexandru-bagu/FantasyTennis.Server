@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="logging.settings.json" />
+    <Content Remove="settings.logging.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="logging.settings.json">
+    <None Include="settings.logging.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

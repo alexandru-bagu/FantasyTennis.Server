@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="relay.settings.json" />
+    <Content Remove="settings.relay.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="relay.settings.json">
+    <None Include="settings.relay.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

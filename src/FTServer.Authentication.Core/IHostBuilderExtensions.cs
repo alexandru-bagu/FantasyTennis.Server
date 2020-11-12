@@ -1,4 +1,5 @@
 ﻿using FTServer.Authentication.Core;
+using FTServer.Authentication.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,11 +11,12 @@ public static class IHostBuilderExtensions
         hostBuilder.UseFantasyTennis();
         hostBuilder.ConfigureAppConfiguration((context, builder) =>
         {
-            builder.AddJsonFile("auth.settings.json");
+            builder.AddJsonFile("settings.auth.json");
         });
-        return hostBuilder.ConfigureServices(services =>
+        return hostBuilder.ConfigureServices((context, services) =>
         {
-            services.AddHostedService<AuthenticationWorker>();
+            services.Configure<AppSettings>(context.Configuration);
+            services.AddHostedService<AuthenticationKernel>();
         });
     }
 }

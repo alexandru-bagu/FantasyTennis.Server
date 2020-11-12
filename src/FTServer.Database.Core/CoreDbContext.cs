@@ -1,4 +1,5 @@
-﻿using FTServer.Database.Core.Model;
+﻿using FTServer.Contracts.Database;
+using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,6 +10,7 @@ namespace FTServer.Database.Core
 {
     public abstract class CoreDbContext : DbContext, IDbContext
     {
+        public DbSet<DataSeed> DataSeeds { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Login> Logins { get; set; }
         public DbSet<LoginAttempt> LoginAttempts { get; set; }

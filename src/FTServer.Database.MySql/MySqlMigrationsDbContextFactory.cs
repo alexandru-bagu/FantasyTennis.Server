@@ -24,7 +24,7 @@ namespace FTServer.Database.MySql
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("mysql.settings.json", optional: false);
+                .AddJsonFile("settings.mysql.json", optional: false);
 
             return builder.Build();
         }

@@ -1,4 +1,5 @@
 ﻿using FTServer.Relay.Core;
+using FTServer.Relay.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,11 +11,12 @@ public static class IHostBuilderExtensions
         hostBuilder.UseFantasyTennis();
         hostBuilder.ConfigureAppConfiguration((context, builder) =>
         {
-            builder.AddJsonFile("relay.settings.json");
+            builder.AddJsonFile("settings.relay.json");
         });
-        return hostBuilder.ConfigureServices(services =>
+        return hostBuilder.ConfigureServices((context, services) =>
         {
-            services.AddHostedService<RelayWorker>();
+            services.Configure<AppSettings>(context.Configuration);
+            services.AddHostedService<RelayKernel>();
         });
     }
 }

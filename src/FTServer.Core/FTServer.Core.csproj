@@ -9,17 +9,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="core.settings.json">
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FTServer.Contracts\FTServer.Contracts.csproj" />
+    <ProjectReference Include="..\FTServer.Security\FTServer.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.core.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.10" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.10" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FTServer.Abstract\FTServer.Abstract.csproj" />
   </ItemGroup>
 </Project>
