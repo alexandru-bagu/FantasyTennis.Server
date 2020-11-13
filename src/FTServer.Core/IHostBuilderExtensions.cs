@@ -6,6 +6,8 @@ using FTServer.Core.Services.Database;
 using FTServer.Security;
 using FTServer.Contracts.Security;
 using FTServer.Core.Settings;
+using FTServer.Contracts.Services.Network;
+using FTServer.Core.Services.Network;
 
 public static class IHostBuilderExtensions
 {
@@ -20,8 +22,9 @@ public static class IHostBuilderExtensions
             services.Configure<CoreSettings>(context.Configuration);
 
             services.AddSingleton<IDataSeedService, DataSeedService>();
-
             services.AddSingleton<ISecureHashProvider, SecureHashProvider>();
+
+            services.AddTransient<INetworkServiceFactory, NetworkServiceFactory>();
         });
     }
 }
