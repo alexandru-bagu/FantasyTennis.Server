@@ -66,7 +66,8 @@ namespace FTServer.Core.Services.Network
                 _logger.LogInformation($"Start Accept Socket: New connection from {args.AcceptSocket.RemoteEndPoint}");
                 try
                 {
-                    var userConnection = (NetworkContext)ActivatorUtilities.CreateInstance(_serviceProvider, _connectionType, args.AcceptSocket);
+                    var stream = new NetworkStream(args.AcceptSocket, true);
+                    var userConnection = (NetworkContext)ActivatorUtilities.CreateInstance(_serviceProvider, _connectionType, stream);
                     await Task.Factory.StartNew(async () => { await (userConnection as INetworkConnectionNotification).NotifyConnected(); });
                 }
                 finally

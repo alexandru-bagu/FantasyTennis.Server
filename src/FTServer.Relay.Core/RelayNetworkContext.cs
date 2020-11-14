@@ -1,13 +1,13 @@
-﻿using FTServer.Contracts.Services.Network;
-using System;
-using System.Net.Sockets;
+﻿using FTServer.Contracts.Security;
+using FTServer.Contracts.Services.Network;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FTServer.Relay.Core
 {
     public class RelayNetworkContext : NetworkContext
     {
-        public RelayNetworkContext(Socket connection, IServiceProvider serviceProvider) : base(connection)
+        public RelayNetworkContext(Stream connection, ICryptographicServiceFactory cryptographicServiceFactory) : base(connection, cryptographicServiceFactory)
         {
         }
 
@@ -16,17 +16,7 @@ namespace FTServer.Relay.Core
             return Task.CompletedTask;
         }
 
-        protected override Task DisconnectAsync()
-        {
-            return Task.CompletedTask;
-        }
-
         protected override Task Disconnected()
-        {
-            return Task.CompletedTask;
-        }
-
-        protected override Task SendAsync()
         {
             return Task.CompletedTask;
         }

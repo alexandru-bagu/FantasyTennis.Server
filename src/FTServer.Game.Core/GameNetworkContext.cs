@@ -1,13 +1,13 @@
-﻿using FTServer.Contracts.Services.Network;
-using System;
-using System.Net.Sockets;
+﻿using FTServer.Contracts.Security;
+using FTServer.Contracts.Services.Network;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FTServer.Game.Core
 {
     public class GameNetworkContext : NetworkContext
     {
-        public GameNetworkContext(Socket connection, IServiceProvider serviceProvider) : base(connection)
+        public GameNetworkContext(Stream connection, ICryptographicServiceFactory cryptographicServiceFactory) : base(connection, cryptographicServiceFactory)
         {
         }
 
@@ -16,17 +16,7 @@ namespace FTServer.Game.Core
             return Task.CompletedTask;
         }
 
-        protected override Task DisconnectAsync()
-        {
-            return Task.CompletedTask;
-        }
-
         protected override Task Disconnected()
-        {
-            return Task.CompletedTask;
-        }
-
-        protected override Task SendAsync()
         {
             return Task.CompletedTask;
         }

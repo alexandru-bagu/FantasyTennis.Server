@@ -33,7 +33,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{01C3F530-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Contracts", "src\FTServer.Contracts\FTServer.Contracts.csproj", "{2C0F4D99-6C58-4C4F-8599-38E964DBEF3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTServer.Security", "src\FTServer.Security\FTServer.Security.csproj", "{42E194E0-2573-4304-AE36-02FC31E6AD4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Security", "src\FTServer.Security\FTServer.Security.csproj", "{42E194E0-2573-4304-AE36-02FC31E6AD4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTServer.Network", "src\FTServer.Network\FTServer.Network.csproj", "{29650499-2642-4CED-A2D9-AA504BDF12F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,10 @@ Global
 		{42E194E0-2573-4304-AE36-02FC31E6AD4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42E194E0-2573-4304-AE36-02FC31E6AD4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42E194E0-2573-4304-AE36-02FC31E6AD4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29650499-2642-4CED-A2D9-AA504BDF12F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29650499-2642-4CED-A2D9-AA504BDF12F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29650499-2642-4CED-A2D9-AA504BDF12F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29650499-2642-4CED-A2D9-AA504BDF12F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +115,7 @@ Global
 		{01C3F530-65D5-4273-A521-67F2A01BD9BA} = {5A4473B5-731B-4864-A609-FD4C1668851B}
 		{2C0F4D99-6C58-4C4F-8599-38E964DBEF3A} = {01C3F530-65D5-4273-A521-67F2A01BD9BA}
 		{42E194E0-2573-4304-AE36-02FC31E6AD4F} = {01C3F530-65D5-4273-A521-67F2A01BD9BA}
+		{29650499-2642-4CED-A2D9-AA504BDF12F1} = {01C3F530-65D5-4273-A521-67F2A01BD9BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E2DBB02E-793C-49CF-B939-A8172EFF4252}

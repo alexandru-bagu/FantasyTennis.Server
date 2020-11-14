@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using FTServer.Contracts.MemoryManagement;
+using FTServer.Contracts.Security;
+using FTServer.Contracts.Services.Database;
+using FTServer.Contracts.Services.Network;
+using FTServer.Core.Services.Database;
+using FTServer.Core.Services.MemoryManagement;
+using FTServer.Core.Services.Network;
+using FTServer.Core.Services.Security;
+using FTServer.Core.Settings;
+using FTServer.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using FTServer.Contracts.Services.Database;
-using FTServer.Core.Services.Database;
-using FTServer.Security;
-using FTServer.Contracts.Security;
-using FTServer.Core.Settings;
-using FTServer.Contracts.Services.Network;
-using FTServer.Core.Services.Network;
+using Microsoft.Extensions.Hosting;
 
 public static class IHostBuilderExtensions
 {
@@ -23,6 +26,8 @@ public static class IHostBuilderExtensions
 
             services.AddSingleton<IDataSeedService, DataSeedService>();
             services.AddSingleton<ISecureHashProvider, SecureHashProvider>();
+            services.AddSingleton<IUnmanagedMemoryService, UnmanagedMemoryService>();
+            services.AddSingleton<ICryptographicServiceFactory, CryptographicServiceFactory>();
 
             services.AddTransient<INetworkServiceFactory, NetworkServiceFactory>();
         });
