@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -22,5 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FTServer.Core\FTServer.Core.csproj" />
+    <ProjectReference Include="..\FTServer.Network\FTServer.Network.csproj" />
   </ItemGroup>
 </Project>

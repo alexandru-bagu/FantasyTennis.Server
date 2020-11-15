@@ -1,13 +1,13 @@
-﻿using FTServer.Contracts.Security;
-using FTServer.Contracts.Services.Network;
+﻿using FTServer.Network;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace FTServer.Relay.Core
 {
-    public class RelayNetworkContext : NetworkContext
+    public class RelayNetworkContext : NetworkContext<RelayNetworkContext>
     {
-        public RelayNetworkContext(Stream connection, ICryptographicServiceFactory cryptographicServiceFactory) : base(connection, cryptographicServiceFactory)
+        public RelayNetworkContext(NetworkContextOptions contextOptions,  IServiceProvider serviceProvider) : base(contextOptions, serviceProvider)
         {
         }
 

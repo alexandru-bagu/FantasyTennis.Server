@@ -1,6 +1,6 @@
 ﻿using FTServer.Contracts.MemoryManagement;
 using FTServer.Contracts.Network;
-using FTServer.Core.Memory;
+using FTServer.Core.MemoryManagement;
 using System;
 
 namespace FTServer.Network
@@ -8,10 +8,23 @@ namespace FTServer.Network
     public abstract class NetworkMessage : INetworkMessage
     {
         public abstract int MaximumSize { get; }
-        public abstract int MessageId { get; }
+        public INetworkMessageHeader Header { get; set; }
 
-        public abstract void Deserialize(IUnmanagedMemoryReader reader);
-        public abstract void Serialize(IUnmanagedMemoryWriter writer);
+        public NetworkMessage(ushort messageId)
+        {
+            Header = new NetworkMessageHeader() { MessageId = messageId };
+        }
+
+        public unsafe virtual void Deserialize(IUnmanagedMemoryReader reader)
+        {
+            Header = *(NetworkMessageHeader*)reader.Pointer.ToPointer();
+            reader.Position += 8;
+        }
+
+        public unsafe virtual void Serialize(IUnmanagedMemoryWriter writer)
+        {
+            Header.Serialize(writer);
+        }
 
         public unsafe void Deserialize(byte[] buffer, int offset)
         {
@@ -20,11 +33,17 @@ namespace FTServer.Network
                     Deserialize(pointer);
         }
 
-        public unsafe void Serialize(byte[] buffer, int offset)
+        public unsafe int Serialize(byte[] buffer, int offset)
         {
             fixed (byte* ptr = buffer)
+            {
                 using (var pointer = new UnmanagedMemory(new IntPtr(ptr + offset), buffer.Length - offset))
+                {
                     Serialize(pointer);
+                    ((NetworkMessageHeader*)ptr)->BodyLength = (ushort)(pointer.Position - 8);
+                    return pointer.Position;
+                }
+            }
         }
     }
 }

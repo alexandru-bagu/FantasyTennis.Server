@@ -8,15 +8,17 @@ public static class IHostBuilderExtensions
 {
     public static IHostBuilder UseAuthenticationServer(this IHostBuilder hostBuilder)
     {
-        hostBuilder.UseFantasyTennis();
-        hostBuilder.ConfigureAppConfiguration((context, builder) =>
-        {
-            builder.AddJsonFile("settings.auth.json");
-        });
-        return hostBuilder.ConfigureServices((context, services) =>
-        {
-            services.Configure<AppSettings>(context.Configuration);
-            services.AddHostedService<AuthenticationKernel>();
-        });
+        return hostBuilder
+            .UseCore()
+            .UseNetwork<AuthenticationNetworkContext>()
+            .ConfigureAppConfiguration((context, builder) =>
+            {
+                builder.AddJsonFile("settings.auth.json");
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.Configure<AppSettings>(context.Configuration);
+                services.AddHostedService<AuthenticationKernel>();
+            });
     }
 }

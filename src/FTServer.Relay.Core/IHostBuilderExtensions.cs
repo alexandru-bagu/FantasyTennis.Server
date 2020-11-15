@@ -8,15 +8,17 @@ public static class IHostBuilderExtensions
 {
     public static IHostBuilder UseRelayServer(this IHostBuilder hostBuilder)
     {
-        hostBuilder.UseFantasyTennis();
-        hostBuilder.ConfigureAppConfiguration((context, builder) =>
-        {
-            builder.AddJsonFile("settings.relay.json");
-        });
-        return hostBuilder.ConfigureServices((context, services) =>
-        {
-            services.Configure<AppSettings>(context.Configuration);
-            services.AddHostedService<RelayKernel>();
-        });
+        return hostBuilder
+            .UseCore()
+            .UseNetwork<RelayNetworkContext>()
+            .ConfigureAppConfiguration((context, builder) =>
+            {
+                builder.AddJsonFile("settings.relay.json");
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.Configure<AppSettings>(context.Configuration);
+                services.AddHostedService<RelayKernel>();
+            });
     }
 }

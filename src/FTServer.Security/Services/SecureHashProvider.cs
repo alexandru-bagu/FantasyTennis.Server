@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FTServer.Security
+namespace FTServer.Security.Services
 {
     public class SecureHashProvider : ISecureHashProvider
     {

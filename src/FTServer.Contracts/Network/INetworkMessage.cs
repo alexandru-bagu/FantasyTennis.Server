@@ -1,11 +1,7 @@
-﻿using FTServer.Contracts.MemoryManagement;
-
-namespace FTServer.Contracts.Network
+﻿namespace FTServer.Contracts.Network
 {
-    public interface INetworkMessage : IRawNetworkMessage
+    public interface INetworkMessage : IRawNetworkMessage, ISerializableMemory
     {
-        int MaximumSize { get; }
-        void Serialize(IUnmanagedMemoryWriter writer);
-        void Deserialize(IUnmanagedMemoryReader reader);
+        INetworkMessageHeader Header { get; set; }
     }
 }

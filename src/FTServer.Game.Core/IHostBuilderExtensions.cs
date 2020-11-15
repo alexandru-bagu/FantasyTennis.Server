@@ -8,15 +8,17 @@ public static class IHostBuilderExtensions
 {
     public static IHostBuilder UseGameServer(this IHostBuilder hostBuilder)
     {
-        hostBuilder.UseFantasyTennis();
-        hostBuilder.ConfigureAppConfiguration((context, builder) =>
-        {
-            builder.AddJsonFile("settings.game.json");
-        });
-        return hostBuilder.ConfigureServices((context, services) =>
-        {
-            services.Configure<AppSettings>(context.Configuration);
-            services.AddHostedService<GameKernel>();
-        });
+        return hostBuilder
+            .UseCore()
+            .UseNetwork<GameNetworkContext>()
+            .ConfigureAppConfiguration((context, builder) =>
+            {
+                builder.AddJsonFile("settings.game.json");
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.Configure<AppSettings>(context.Configuration);
+                services.AddHostedService<GameKernel>();
+            });
     }
 }

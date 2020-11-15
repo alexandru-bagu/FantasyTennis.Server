@@ -1,8 +1,8 @@
 ﻿using FTServer.Contracts.Security;
 
-namespace FTServer.Security
+namespace FTServer.Security.Services
 {
-    public class CryptographicService : ICryptographicService
+    public class CryptographyService : ICryptographyService
     {
         private CryptographicOption _encryptOption;
         private CryptographicOption _decryptOption;
@@ -10,7 +10,7 @@ namespace FTServer.Security
         public ICryptographicOption EncryptOption => _encryptOption;
         public ICryptographicOption DecryptOption => _decryptOption;
 
-        public CryptographicService(CryptographicOption decryptOption, CryptographicOption encryptOption)
+        public CryptographyService(CryptographicOption decryptOption, CryptographicOption encryptOption)
         {
             _encryptOption = encryptOption;
             _decryptOption = decryptOption;

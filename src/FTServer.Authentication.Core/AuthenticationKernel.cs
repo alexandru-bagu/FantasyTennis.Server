@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FTServer.Authentication.Core.Network;
 using FTServer.Authentication.Core.Settings;
 using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
@@ -18,12 +19,14 @@ namespace FTServer.Authentication.Core
         private readonly AppSettings _appSettings;
         private INetworkService<AuthenticationNetworkContext> _authenticationNetworkService;
 
-        public AuthenticationKernel(ILogger<AuthenticationKernel> logger, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings)
+        public AuthenticationKernel(ILogger<AuthenticationKernel> logger, IServiceProvider serviceProvider, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<AuthenticationNetworkContext> networkMessageHandlerService)
         {
             _logger = logger;
             _dataSeedService = dataSeedService;
             _networkServiceFactory = networkServiceFactory;
             _appSettings = appSettings.Value;
+
+            networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,11 +38,8 @@ namespace FTServer.Authentication.Core
                 {
                     await _authenticationNetworkService.ListenAsync();
 
-                    while (!stoppingToken.IsCancellationRequested)
-                    {
-                        _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                        await Task.Delay(1000, stoppingToken);
-                    }
+                    _logger.LogInformation("Authentication server started.");
+                    await Task.Delay(-1, stoppingToken);
                 }
             }
             catch (Exception ex)

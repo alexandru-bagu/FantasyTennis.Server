@@ -1,5 +1,5 @@
 ﻿using FTServer.Contracts.MemoryManagement;
-using FTServer.Core.Memory;
+using FTServer.Core.MemoryManagement;
 using System;
 using System.Collections.Generic;
 

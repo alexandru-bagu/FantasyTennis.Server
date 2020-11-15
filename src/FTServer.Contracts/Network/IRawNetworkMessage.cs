@@ -1,10 +1,8 @@
-﻿using FTServer.Contracts.MemoryManagement;
-
+﻿
 namespace FTServer.Contracts.Network
 {
-    public interface IRawNetworkMessage
+    public interface IRawNetworkMessage : ISerializableRawMemory
     {
-        void Serialize(byte[] buffer, int offset);
-        void Deserialize(byte[] buffer, int offset);
+        int MaximumSize { get; }
     }
 }

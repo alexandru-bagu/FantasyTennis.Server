@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
+using FTServer.Relay.Core.Network;
 using FTServer.Relay.Core.Settings;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,12 +19,14 @@ namespace FTServer.Relay.Core
         private readonly AppSettings _appSettings;
         private INetworkService<RelayNetworkContext> _relayNetworkService;
 
-        public RelayKernel(ILogger<RelayKernel> logger, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings)
+        public RelayKernel(ILogger<RelayKernel> logger, IServiceProvider serviceProvider, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<RelayNetworkContext> networkMessageHandlerService)
         {
             _logger = logger;
             _dataSeedService = dataSeedService;
             _networkServiceFactory = networkServiceFactory;
             _appSettings = appSettings.Value;
+
+            networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,11 +38,8 @@ namespace FTServer.Relay.Core
                 {
                     await _relayNetworkService.ListenAsync();
 
-                    while (!stoppingToken.IsCancellationRequested)
-                    {
-                        _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                        await Task.Delay(1000, stoppingToken);
-                    }
+                    _logger.LogInformation("Relay server started.");
+                    await Task.Delay(-1, stoppingToken);
                 }
             }
             catch (Exception ex)

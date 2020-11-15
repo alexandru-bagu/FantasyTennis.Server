@@ -1,4 +1,5 @@
-﻿using FTServer.Contracts.Services.Network;
+﻿using FTServer.Contracts.Network;
+using FTServer.Contracts.Services.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,10 +8,10 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FTServer.Core.Services.Network
+namespace FTServer.Network.Services
 {
     public class NetworkService<T> : INetworkService<T>
-        where T : NetworkContext
+        where T : INetworkContext
     {
         private readonly IPEndPoint _bindEndpoint;
         private readonly SemaphoreSlim _semaphore;
@@ -66,12 +67,14 @@ namespace FTServer.Core.Services.Network
                 _logger.LogInformation($"Start Accept Socket: New connection from {args.AcceptSocket.RemoteEndPoint}");
                 try
                 {
-                    var stream = new NetworkStream(args.AcceptSocket, true);
-                    var userConnection = (NetworkContext)ActivatorUtilities.CreateInstance(_serviceProvider, _connectionType, stream);
-                    await Task.Factory.StartNew(async () => { await (userConnection as INetworkConnectionNotification).NotifyConnected(); });
+                    var socket = args.AcceptSocket;
+                    var stream = new NetworkStream(socket, true);
+                    var userConnection = _serviceProvider.Create<INetworkContext>(_connectionType, new NetworkContextOptions(stream, socket.RemoteEndPoint, socket.LocalEndPoint));
+                    var _ = userConnection.NotifyConnected();
                 }
                 finally
                 {
+                    _acceptSocketArgs.AcceptSocket = null;
                     if (_socket != null && !_socket.AcceptAsync(_acceptSocketArgs))
                         await AcceptSocket(_acceptSocketArgs);
                     _logger.LogInformation("End Accept Socket");

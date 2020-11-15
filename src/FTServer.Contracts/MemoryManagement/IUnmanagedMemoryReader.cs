@@ -3,7 +3,7 @@ using System.Text;
 
 namespace FTServer.Contracts.MemoryManagement
 {
-    public interface IUnmanagedMemoryReader
+    public interface IUnmanagedMemoryReader : ISeekableMemory
     {
         byte ReadByte();
         sbyte ReadSByte();

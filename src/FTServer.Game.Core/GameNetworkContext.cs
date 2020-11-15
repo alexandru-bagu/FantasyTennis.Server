@@ -1,13 +1,13 @@
-﻿using FTServer.Contracts.Security;
-using FTServer.Contracts.Services.Network;
+﻿using FTServer.Network;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace FTServer.Game.Core
 {
-    public class GameNetworkContext : NetworkContext
+    public class GameNetworkContext : NetworkContext<GameNetworkContext>
     {
-        public GameNetworkContext(Stream connection, ICryptographicServiceFactory cryptographicServiceFactory) : base(connection, cryptographicServiceFactory)
+        public GameNetworkContext(NetworkContextOptions contextOptions, IServiceProvider serviceProvider) : base(contextOptions, serviceProvider)
         {
         }
 

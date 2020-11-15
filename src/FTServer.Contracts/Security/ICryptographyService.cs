@@ -2,7 +2,7 @@
 
 namespace FTServer.Contracts.Security
 {
-    public interface ICryptographicService : IDisposable
+    public interface ICryptographyService : IDisposable
     {
         ICryptographicOption EncryptOption { get; }
         void Encrypt(byte[] buffer, int offset, int length);
