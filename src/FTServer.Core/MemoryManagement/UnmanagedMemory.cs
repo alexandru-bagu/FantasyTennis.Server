@@ -14,7 +14,8 @@ namespace FTServer.Core.MemoryManagement
         public IntPtr PointerStart { get => new IntPtr(_startPointer); }
         public IntPtr Pointer { get => new IntPtr(_currentPointer); }
         public int Position { get => (int)(_currentPointer - _startPointer); set => _currentPointer = _startPointer + value; }
-
+        public IUnmanagedMemoryReader Reader => this;
+        public IUnmanagedMemoryWriter Writer => this;
         public UnmanagedMemory(int size) : this(Marshal.AllocHGlobal(size), size, true)
         {
         }
@@ -227,9 +228,10 @@ namespace FTServer.Core.MemoryManagement
             int size = 0;
             try
             {
-                fixed (char* cptr = value)
+                var @null = value + "\0";
+                fixed (char* cptr = @null)
                 {
-                    size = encoding.GetBytes(cptr, value.Length, _currentPointer, Size - Position);
+                    size = encoding.GetBytes(cptr, @null.Length, _currentPointer, Size - Position);
                     return this;
                 }
             }
