@@ -113,7 +113,7 @@ namespace FTServer.Network
                     fixed (byte* ptr = buffer)
                     {
                         var header = (NetworkMessageHeader*)ptr;
-                        header->Serial = _messageSerialService.Compute(buffer, offset);
+                        header->Serial = _messageSerialService.ComputeSend(buffer, offset);
                         header->Checksum = _messageChecksumService.Compute(buffer, offset);
                     }
                 }
