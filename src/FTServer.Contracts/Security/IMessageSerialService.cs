@@ -2,6 +2,7 @@
 {
     public interface IMessageSerialService
     {
-        ushort Compute(byte[] buffer, int offset);
+        ushort ComputeSend(byte[] buffer, int offset);
+        bool ValidateReceive(ushort serial);
     }
 }
