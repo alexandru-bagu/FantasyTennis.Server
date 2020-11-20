@@ -15,7 +15,7 @@ namespace FTServer.Database.MySql
             configuration.Bind(settings);
 
             var builder = new DbContextOptionsBuilder<MySqlDbContext>()
-                .UseMySql(settings.MySqlSettings.ConnectionString);
+                .UseMySql(settings.MySqlSettings.ConnectionString, ServerVersion.AutoDetect(settings.MySqlSettings.ConnectionString));
 
             return new MySqlDbContext(builder.Options);
         }

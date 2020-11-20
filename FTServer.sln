@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Contracts", "src\F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Security", "src\FTServer.Security\FTServer.Security.csproj", "{42E194E0-2573-4304-AE36-02FC31E6AD4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTServer.Network", "src\FTServer.Network\FTServer.Network.csproj", "{29650499-2642-4CED-A2D9-AA504BDF12F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Network", "src\FTServer.Network\FTServer.Network.csproj", "{29650499-2642-4CED-A2D9-AA504BDF12F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -18,7 +18,7 @@ public static class IHostBuilderExtensions
             var settings = new { MySqlSettings = new MySqlSettings() };
             configuration.Bind(settings);
 
-            builder.UseMySql(settings.MySqlSettings.ConnectionString);
+            builder.UseMySql(settings.MySqlSettings.ConnectionString, ServerVersion.AutoDetect(settings.MySqlSettings.ConnectionString));
         });
     }
 }
