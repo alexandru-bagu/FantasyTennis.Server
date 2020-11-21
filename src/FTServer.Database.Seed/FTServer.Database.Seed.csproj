@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FTServer.Contracts\FTServer.Contracts.csproj" />
+    <ProjectReference Include="..\FTServer.Database.Model\FTServer.Database.Model.csproj" />
+  </ItemGroup>
+
+</Project>

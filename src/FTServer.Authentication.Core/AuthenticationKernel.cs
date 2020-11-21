@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FTServer.Authentication.Core.Network;
 using FTServer.Authentication.Core.Settings;
-using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,15 +13,13 @@ namespace FTServer.Authentication.Core
     public class AuthenticationKernel : BackgroundService
     {
         private readonly ILogger<AuthenticationKernel> _logger;
-        private readonly IDataSeedService _dataSeedService;
         private readonly INetworkServiceFactory _networkServiceFactory;
         private readonly AppSettings _appSettings;
         private INetworkService<AuthenticationNetworkContext> _authenticationNetworkService;
 
-        public AuthenticationKernel(ILogger<AuthenticationKernel> logger, IServiceProvider serviceProvider, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<AuthenticationNetworkContext> networkMessageHandlerService)
+        public AuthenticationKernel(ILogger<AuthenticationKernel> logger, IServiceProvider serviceProvider, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<AuthenticationNetworkContext> networkMessageHandlerService)
         {
             _logger = logger;
-            _dataSeedService = dataSeedService;
             _networkServiceFactory = networkServiceFactory;
             _appSettings = appSettings.Value;
 
@@ -33,7 +30,6 @@ namespace FTServer.Authentication.Core
         {
             try
             {
-                await _dataSeedService.SeedAsync();
                 using (_authenticationNetworkService = _networkServiceFactory.Create<AuthenticationNetworkContext>(_appSettings.AuthServer.Network.Host, _appSettings.AuthServer.Network.Port))
                 {
                     await _authenticationNetworkService.ListenAsync();

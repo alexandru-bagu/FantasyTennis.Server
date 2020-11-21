@@ -1,6 +1,4 @@
 ﻿using FTServer.Contracts.MemoryManagement;
-using FTServer.Contracts.Services.Database;
-using FTServer.Core.Services.Database;
 using FTServer.Core.Services.MemoryManagement;
 using FTServer.Core.Settings;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +18,6 @@ public static class IHostBuilderExtensions
             {
                 services.Configure<CoreSettings>(context.Configuration);
 
-                services.AddSingleton<IDataSeedService, DataSeedService>();
                 services.AddSingleton<IUnmanagedMemoryService, UnmanagedMemoryService>();
             });
     }

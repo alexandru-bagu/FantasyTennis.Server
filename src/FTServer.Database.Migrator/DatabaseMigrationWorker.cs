@@ -1,31 +1,35 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FTServer.Contracts.Database;
+using FTServer.Contracts.Services.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace FTServer.Database.Migrator
 {
     public class DatabaseMigrationWorker : BackgroundService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly IDataSeedService _dataSeedService;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
-        public DatabaseMigrationWorker(IServiceScopeFactory serviceScopeFactory, IHostApplicationLifetime hostApplicationLifetime)
+        public DatabaseMigrationWorker(IUnitOfWorkFactory unitOfWorkFactory, IDataSeedService dataSeedService, IHostApplicationLifetime hostApplicationLifetime)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _unitOfWorkFactory = unitOfWorkFactory;
+            _dataSeedService = dataSeedService;
             _hostApplicationLifetime = hostApplicationLifetime;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            await using (var unitOfWork = await _unitOfWorkFactory.Create())
             {
-                var dbContext = scope.ServiceProvider.GetService<IDbContext>();
-                await dbContext.Database.MigrateAsync();
-                _hostApplicationLifetime.StopApplication();
+                var databaseContext = unitOfWork.DatabaseContext as IRawDbContext;
+                await databaseContext.Database.MigrateAsync();
+                await unitOfWork.CommitAsync();
             }
+            await _dataSeedService.SeedAsync();
+            _hostApplicationLifetime.StopApplication();
         }
     }
 }

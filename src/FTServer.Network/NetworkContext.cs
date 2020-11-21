@@ -62,6 +62,8 @@ namespace FTServer.Network
             _networkMessageHandlerService = serviceProvider.GetService<INetworkMessageHandlerService<TNetworkContext>>();
             _messageChecksumService = serviceProvider.GetService<IMessageChecksumService>();
             _cryptographyServiceFactory = serviceProvider.GetService<ICryptographyServiceFactory>();
+
+            _self = (TNetworkContext)(object)this;
         }
 
         ~NetworkContext()

@@ -2,13 +2,11 @@
 using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
 using System.Threading.Tasks;
 
 namespace FTServer.Database.Core
 {
-    public abstract class CoreDbContext : DbContext, IDbContext
+    public abstract class CoreDbContext : DbContext, IRawDbContext
     {
         public DbSet<DataSeed> DataSeeds { get; set; }
         public DbSet<Account> Accounts { get; set; }
@@ -21,18 +19,14 @@ namespace FTServer.Database.Core
         public DbSet<GameServer> GameServers { get; set; }
         public DbSet<RelayServer> RelayServers { get; set; }
 
-        DatabaseFacade IDbContext.Database => Database;
-
-        private IDbContextTransaction _transactions;
+        DatabaseFacade IRawDbContext.Database => Database;
 
         protected CoreDbContext()
         {
-            _transactions = null;
         }
 
         protected CoreDbContext(DbContextOptions options) : base(options)
         {
-            _transactions = null;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,67 +38,23 @@ namespace FTServer.Database.Core
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task BeginTransactionAsync()
+        void IRawDbContext.SaveChanges()
         {
-            if (_transactions == null)
-            {
-                _transactions = await Database.BeginTransactionAsync();
-            }
-            else
-            {
-                throw new Exception("A transaction is already in progress.");
-            }
+            SaveChanges();
         }
 
-        public async Task CommitAsync()
+        async Task IRawDbContext.SaveChangesAsync()
         {
-            if (_transactions != null)
-            {
-                await SaveChangesAsync();
-                await _transactions.CommitAsync();
-                await _transactions.DisposeAsync();
-                _transactions = null;
-            }
-            else
-            {
-                throw new Exception("No transaction is in progress.");
-            }
-        }
-
-        public async Task RollbackAsync()
-        {
-            if (_transactions != null)
-            {
-                await _transactions.RollbackAsync();
-                await _transactions.DisposeAsync();
-                _transactions = null;
-            }
-            else
-            {
-                throw new Exception("No transaction is in progress.");
-            }
-        }
-
-        private void Rollback()
-        {
-            if (_transactions != null)
-            {
-                _transactions.Rollback();
-                _transactions.Dispose();
-                _transactions = null;
-            }
+            await SaveChangesAsync();
         }
 
         public override void Dispose()
         {
-            Rollback();
             base.Dispose();
         }
 
         public override async ValueTask DisposeAsync()
         {
-            if (_transactions != null)
-                await RollbackAsync();
             await base.DisposeAsync();
         }
     }

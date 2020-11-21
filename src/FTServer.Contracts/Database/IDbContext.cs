@@ -1,8 +1,6 @@
 ﻿using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
-using System.Threading.Tasks;
 
 namespace FTServer.Contracts.Database
 {
@@ -18,11 +16,5 @@ namespace FTServer.Contracts.Database
         DbSet<Furniture> Furniture { get; set; }
         DbSet<GameServer> GameServers { get; set; }
         DbSet<RelayServer> RelayServers { get; set; }
-
-        DatabaseFacade Database { get; }
-
-        Task BeginTransactionAsync();
-        Task CommitAsync();
-        Task RollbackAsync();
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
 using FTServer.Relay.Core.Network;
 using FTServer.Relay.Core.Settings;
@@ -14,15 +13,13 @@ namespace FTServer.Relay.Core
     public class RelayKernel : BackgroundService
     {
         private readonly ILogger<RelayKernel> _logger;
-        private readonly IDataSeedService _dataSeedService;
         private readonly INetworkServiceFactory _networkServiceFactory;
         private readonly AppSettings _appSettings;
         private INetworkService<RelayNetworkContext> _relayNetworkService;
 
-        public RelayKernel(ILogger<RelayKernel> logger, IServiceProvider serviceProvider, IDataSeedService dataSeedService, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<RelayNetworkContext> networkMessageHandlerService)
+        public RelayKernel(ILogger<RelayKernel> logger, IServiceProvider serviceProvider, INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, INetworkMessageHandlerService<RelayNetworkContext> networkMessageHandlerService)
         {
             _logger = logger;
-            _dataSeedService = dataSeedService;
             _networkServiceFactory = networkServiceFactory;
             _appSettings = appSettings.Value;
 
@@ -33,7 +30,6 @@ namespace FTServer.Relay.Core
         {
             try
             {
-                await _dataSeedService.SeedAsync();
                 using (_relayNetworkService = _networkServiceFactory.Create<RelayNetworkContext>(_appSettings.RelayServer.Network.Host, _appSettings.RelayServer.Network.Port))
                 {
                     await _relayNetworkService.ListenAsync();

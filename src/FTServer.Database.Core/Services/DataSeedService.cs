@@ -10,21 +10,23 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FTServer.Core.Services.Database
+namespace FTServer.Database.Core.Services
 {
     public class DataSeedService : IDataSeedService
     {
         private readonly ILogger<DataSeedService> _logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly IServiceProvider _serviceProvider;
         private readonly SemaphoreSlim _semaphoreSlim;
         private bool _ran;
 
-        public DataSeedService(ILogger<DataSeedService> logger, IServiceScopeFactory serviceScopeFactory)
+        public DataSeedService(ILogger<DataSeedService> logger, IUnitOfWorkFactory unitOfWorkFactory, IServiceProvider serviceProvider)
         {
             _semaphoreSlim = new SemaphoreSlim(1);
             _ran = false;
             _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
+            _unitOfWorkFactory = unitOfWorkFactory;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task SeedAsync()
@@ -36,9 +38,9 @@ namespace FTServer.Core.Services.Database
                 _ran = true;
 
                 _logger.LogInformation($"Begin {nameof(SeedAsync)}");
-                using (var scope = _serviceScopeFactory.CreateScope())
-                using (var dbContext = scope.ServiceProvider.GetService<IDbContext>())
+                await using (var unitOfWork = await _unitOfWorkFactory.Create())
                 {
+                    var dbContext = unitOfWork.DatabaseContext;
                     var baseType = typeof(IDataSeeder);
                     var seederTypes = new HashSet<Type>();
 
@@ -58,16 +60,15 @@ namespace FTServer.Core.Services.Database
                     for (var i = 0; i < seedOrder.Length; i++)
                     {
                         var seederType = seedOrder[i];
-                        var seeder = (IDataSeeder)ActivatorUtilities.CreateInstance(scope.ServiceProvider, seederType);
+                        var seeder = (IDataSeeder)ActivatorUtilities.CreateInstance(_serviceProvider, seederType);
                         if (await dbContext.DataSeeds.FirstOrDefaultAsync(p => p.Id == seederType.FullName) == null)
                         {
-                            await dbContext.BeginTransactionAsync();
                             try
                             {
                                 _logger.LogDebug($"Starting seeder: {seederType.FullName}");
                                 await seeder.SeedAsync(dbContext);
                                 dbContext.DataSeeds.Add(new DataSeed() { Id = seederType.FullName });
-                                await dbContext.CommitAsync();
+                                await unitOfWork.CommitAsync();
                                 _logger.LogDebug($"Finishing seeder: {seederType.FullName}");
                             }
                             catch (Exception ex)
@@ -75,6 +76,10 @@ namespace FTServer.Core.Services.Database
                                 _logger.LogError($"{nameof(SeedAsync)}", ex);
                                 throw new Exception($"Error during seed {seederType.FullName}", ex);
                             }
+                        }
+                        else
+                        {
+                            _logger.LogDebug($"Seeder: {seederType.FullName} already ran");
                         }
                     }
                 }
