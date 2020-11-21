@@ -17,7 +17,7 @@ namespace FTServer.Database.Migrator
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("logging.settings.json")
+                .AddJsonFile("settings.logging.json")
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -44,7 +44,8 @@ namespace FTServer.Database.Migrator
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .UseMySqlDatabase()
+                .UseSQLiteDatabase()
+                //.UseMySqlDatabase()
                 .ConfigureServices((hostContext, services) => services.AddHostedService<DatabaseMigrationWorker>());
     }
 }

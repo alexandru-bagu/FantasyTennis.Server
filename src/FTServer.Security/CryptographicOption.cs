@@ -5,12 +5,10 @@ namespace FTServer.Security
     public class CryptographicOption : ICryptographicOption
     {
         public byte[] Key { get; }
-        public byte[] IV { get; }
 
-        public CryptographicOption(byte[] key, byte[] iv)
+        public CryptographicOption(byte[] key)
         {
             Key = key;
-            IV = iv;
         }
     }
 }

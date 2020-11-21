@@ -4,6 +4,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FTServer.Service.Windows
 {
@@ -23,6 +24,8 @@ namespace FTServer.Service.Windows
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
             try
             {
                 Log.Information("Starting services.");
@@ -40,10 +43,16 @@ namespace FTServer.Service.Windows
             }
         }
 
+        private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            Log.Error(e.Exception, sender.ToString());
+        }
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .UseMySqlDatabase()
+                .UseSQLiteDatabase()
                 .UseAuthenticationServer()
                 .UseGameServer()
                 .UseRelayServer()

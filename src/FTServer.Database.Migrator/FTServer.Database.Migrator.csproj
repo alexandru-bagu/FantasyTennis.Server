@@ -29,5 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\FTServer.Contracts\FTServer.Contracts.csproj" />
     <ProjectReference Include="..\FTServer.Database.MySql\FTServer.Database.MySql.csproj" />
+    <ProjectReference Include="..\FTServer.Database.SQLite\FTServer.Database.SQLite.csproj" />
   </ItemGroup>
 </Project>

@@ -4,14 +4,19 @@ namespace FTServer.Security.Services
 {
     public class CryptographyServiceFactory : ICryptographyServiceFactory
     {
-        public ICryptographyService Create(ICryptographicOption decryptOption, ICryptographicOption encryptOption)
+        public ICryptographyService CreatePlain()
         {
-            return new CryptographyService((CryptographicOption)decryptOption, (CryptographicOption)encryptOption);
+            return new PlainCryptographyService();
         }
 
-        public ICryptographyService Create()
+        public ICryptographyService CreateXor(ICryptographicOption decryptOption, ICryptographicOption encryptOption)
         {
-            return Create(new CryptographicOption(new byte[4], new byte[4]), new CryptographicOption(new byte[4], new byte[4]));
+            return new XorCryptographyService((CryptographicOption)decryptOption, (CryptographicOption)encryptOption);
+        }
+
+        public ICryptographyService CreateBlowfish(ICryptographicOption decryptOption, ICryptographicOption encryptOption)
+        {
+            return new BlowfishCryptographyService((CryptographicOption)decryptOption, (CryptographicOption)encryptOption);
         }
     }
 }

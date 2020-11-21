@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Buffers;
 using System.Diagnostics;
-using System.Net;
+using FTServer.Network.Message.System.Session;
+using System.Security.Cryptography;
 
 namespace FTServer.Network
 {
@@ -27,12 +28,14 @@ namespace FTServer.Network
         private readonly INetworkMessageFactory _networkMessageFactory;
         private readonly INetworkMessageHandlerService<TNetworkContext> _networkMessageHandlerService;
         private readonly IMessageChecksumService _messageChecksumService;
-        private readonly IMessageSerialService _messageSerialService;
+        private readonly ICryptographyServiceFactory _cryptographyServiceFactory;
         private TNetworkContext _self;
-
+        
+        private bool _saidHello;
         private bool _connected;
 
         protected ICryptographyService CryptographyService { get; set; }
+        protected IMessageSerialService MessageSerialService { get; set; }
         protected ILogger Logger { get; private set; }
         public INetworkContextOptions Options { get; }
 
@@ -48,17 +51,17 @@ namespace FTServer.Network
             _sendStopwatch = new Stopwatch();
 
             _connected = true;
+            _saidHello = false;
 
             Options = contextOptions;
             Logger = loggerFactory.CreateLogger<NetworkContext<TNetworkContext>>();
-            CryptographyService = new NullCryptographyService();
+            MessageSerialService = serviceProvider.GetService<IMessageSerialService>();
+            CryptographyService = new PlainCryptographyService();
 
             _networkMessageFactory = serviceProvider.GetService<INetworkMessageFactory>();
             _networkMessageHandlerService = serviceProvider.GetService<INetworkMessageHandlerService<TNetworkContext>>();
             _messageChecksumService = serviceProvider.GetService<IMessageChecksumService>();
-            _messageSerialService = serviceProvider.GetService<IMessageSerialService>();
-
-            _self = (TNetworkContext)((object)this);
+            _cryptographyServiceFactory = serviceProvider.GetService<ICryptographyServiceFactory>();
         }
 
         ~NetworkContext()
@@ -67,7 +70,14 @@ namespace FTServer.Network
                 InternalDisconnect();
         }
 
+        /// <summary>
+        /// Invoked on connect. Must one of the cryptography methods: UseBlowfishCryptography, UseXorCryptography or UsePlainCryptography.
+        /// </summary>
         protected abstract Task Connected();
+
+        /// <summary>
+        /// Invoked on disconnect.
+        /// </summary>
         protected abstract Task Disconnected();
 
         public virtual async Task SendAsync(INetworkMessage message)
@@ -76,11 +86,24 @@ namespace FTServer.Network
             try
             {
                 int size = message.Serialize(buffer, 0);
-                await ((IRawNetworkContext)this).SendRawAsync(buffer, 0, size);
+                if (size % 8 != 0)
+                    size += AlignBy8(buffer, 0);
+                await SendRawAsync(buffer, 0, size);
             }
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer);
+            }
+        }
+
+        private unsafe int AlignBy8(byte[] buffer, int size)
+        {
+            fixed (byte* ptr = buffer)
+            {
+                var header = (NetworkMessageHeader*)ptr;
+                var extra = 8 - header->BodyLength % 8;
+                header->BodyLength += (ushort)extra;
+                return extra;
             }
         }
 
@@ -113,10 +136,13 @@ namespace FTServer.Network
                     fixed (byte* ptr = buffer)
                     {
                         var header = (NetworkMessageHeader*)ptr;
-                        header->Serial = _messageSerialService.ComputeSend(buffer, offset);
+                        header->Serial = MessageSerialService.ComputeSend(buffer, offset);
                         header->Checksum = _messageChecksumService.Compute(buffer, offset);
                     }
                 }
+#if DEBUG
+                LogPacket(buffer, offset, size, "Send");
+#endif
                 CryptographyService.Encrypt(buffer, offset, size);
                 await _connection.WriteAsync(buffer, offset, size);
             }
@@ -178,8 +204,17 @@ namespace FTServer.Network
                     CryptographyService.Decrypt(_readBuffer, 0, 8);
                     ushort length = (ushort)(_readBuffer[6] | (_readBuffer[7] << 8));
                     await ReadBlock(8, length);
+                    if (length >= _readBuffer.Length) throw new Exception("Desynchronization error.");
                     CryptographyService.Decrypt(_readBuffer, 8, length);
-                    var _ = ProcessReceive(_networkMessageFactory.Create(_readBuffer, 0, length + 8));
+#if DEBUG
+                    LogPacket(_readBuffer, 0, length, "Recv");
+#endif
+                    var localChecksum = _messageChecksumService.Compute(_readBuffer, 0);
+                    ushort recvChecksum = (ushort)(_readBuffer[2] | (_readBuffer[3] << 8));
+                    if (recvChecksum == localChecksum)
+                    {
+                        var _ = ProcessReceive(_networkMessageFactory.Create(_readBuffer, 0, length + 8));
+                    }
                 }
             }
             catch (SocketException ex)
@@ -193,12 +228,22 @@ namespace FTServer.Network
             }
         }
 
+#if DEBUG
+        private void LogPacket(byte[] buffer, int offset, int length, string direction)
+        {
+            Logger.LogTrace($"{direction}: {BitConverter.ToString(buffer, offset, length).Replace("-", " ")}");
+        }
+#endif
+
         protected virtual async Task ProcessReceive(INetworkMessage message)
         {
             await _processRead.WaitAsync();
             try
             {
-                await _networkMessageHandlerService.Process(message, _self);
+                if (MessageSerialService.ValidateReceive(message.Header.Serial))
+                {
+                    await _networkMessageHandlerService.Process(message, _self);
+                }
             }
             catch (Exception ex)
             {
@@ -210,12 +255,48 @@ namespace FTServer.Network
             }
         }
 
-        Task INetworkContextNotification.NotifyConnected()
+        async Task INetworkContextNotification.NotifyConnected()
         {
+            await Connected();
             var _ = NetworkReceive();
-            _ = Connected();
-            return Task.CompletedTask;
         }
         async Task INetworkContextNotification.NotifyDisconnected() { await Disconnected(); }
+
+
+        protected async Task UseBlowfishCryptography()
+        {
+            if (_saidHello) throw new Exception("Already said hello.");
+            _saidHello = true;
+            var bfEncKey = new byte[16];
+            var bfDecKey = new byte[16];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(bfEncKey);
+                rng.GetBytes(bfDecKey);
+            }
+            await SendAsync(new BlowfishSessionHello(bfDecKey, bfEncKey));
+            CryptographyService = _cryptographyServiceFactory.CreateBlowfish(new CryptographicOption(bfDecKey), new CryptographicOption(bfEncKey));
+        }
+
+        protected async Task UseXorCryptography()
+        {
+            if (_saidHello) throw new Exception("Already said hello.");
+            _saidHello = true;
+            var rnd = new Random();
+            var bfEncKey = rnd.Next();
+            var bfDecKey = rnd.Next();
+            var sendSerialKey = rnd.Next(0, 5);
+            var receiveSerialKey = rnd.Next(0, 5);
+            await SendAsync(new XorSessionHello(bfDecKey, bfEncKey, sendSerialKey, receiveSerialKey));
+            MessageSerialService.UpdateKeys(receiveSerialKey, sendSerialKey);
+            CryptographyService = _cryptographyServiceFactory.CreateXor(new CryptographicOption(BitConverter.GetBytes(bfDecKey)), new CryptographicOption(BitConverter.GetBytes(bfEncKey)));
+        }
+
+        protected async Task UsePlainCryptography()
+        {
+            if (_saidHello) throw new Exception("Already said hello.");
+            _saidHello = true;
+            await SendAsync(new PlainSessionHello());
+        }
     }
 }

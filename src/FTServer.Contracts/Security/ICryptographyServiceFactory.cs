@@ -2,7 +2,8 @@
 {
     public interface ICryptographyServiceFactory
     {
-        ICryptographyService Create();
-        ICryptographyService Create(ICryptographicOption decryptOption, ICryptographicOption encryptOption);
+        ICryptographyService CreatePlain();
+        ICryptographyService CreateXor(ICryptographicOption decryptOption, ICryptographicOption encryptOption);
+        ICryptographyService CreateBlowfish(ICryptographicOption decryptOption, ICryptographicOption encryptOption);
     }
 }

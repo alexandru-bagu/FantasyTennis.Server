@@ -2,7 +2,7 @@
 
 namespace FTServer.Security.Services
 {
-    public class CryptographyService : ICryptographyService
+    public class XorCryptographyService : ICryptographyService
     {
         private CryptographicOption _encryptOption;
         private CryptographicOption _decryptOption;
@@ -10,7 +10,7 @@ namespace FTServer.Security.Services
         public ICryptographicOption EncryptOption => _encryptOption;
         public ICryptographicOption DecryptOption => _decryptOption;
 
-        public CryptographyService(CryptographicOption decryptOption, CryptographicOption encryptOption)
+        public XorCryptographyService(CryptographicOption decryptOption, CryptographicOption encryptOption)
         {
             _encryptOption = encryptOption;
             _decryptOption = decryptOption;

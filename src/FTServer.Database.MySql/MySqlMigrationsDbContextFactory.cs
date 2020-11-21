@@ -10,12 +10,10 @@ namespace FTServer.Database.MySql
         public MySqlDbContext CreateDbContext(string[] args)
         {
             var configuration = BuildConfiguration();
-
-            var settings = new { MySqlSettings = new MySqlSettings() };
-            configuration.Bind(settings);
+            var settings = configuration.ReadMySqlSettings();
 
             var builder = new DbContextOptionsBuilder<MySqlDbContext>()
-                .UseMySql(settings.MySqlSettings.ConnectionString, ServerVersion.AutoDetect(settings.MySqlSettings.ConnectionString));
+                .UseMySql(settings.ConnectionString, ServerVersion.AutoDetect(settings.ConnectionString));
 
             return new MySqlDbContext(builder.Options);
         }

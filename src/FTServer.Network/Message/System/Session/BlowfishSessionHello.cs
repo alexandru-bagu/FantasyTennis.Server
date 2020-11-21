@@ -1,9 +1,12 @@
 ﻿using FTServer.Contracts.MemoryManagement;
 
-namespace FTServer.Network.Message.Login
+namespace FTServer.Network.Message.System.Session
 {
+    /// <summary>
+    /// Message to initialize the blowfish crypto client-side. Serial key will default to -1 and so all messages will start with double 0.
+    /// </summary>
     [NetworkMessage(MessageId)]
-    public class BlowfishSession : NetworkMessage
+    public class BlowfishSessionHello : NetworkMessage
     {
         public const ushort MessageId = 0xFF99;
         public override int MaximumSize => 40;
@@ -11,11 +14,11 @@ namespace FTServer.Network.Message.Login
         public byte[] BlowfishSendKey { get; set; }
         public byte[] BlowfishReceiveKey { get; set; }
 
-        public BlowfishSession() : base(MessageId)
+        public BlowfishSessionHello() : base(MessageId)
         {
         }
 
-        public BlowfishSession(byte[] blowfishSendKey, byte[] blowishReceiveKey) : this()
+        public BlowfishSessionHello(byte[] blowfishSendKey, byte[] blowishReceiveKey) : this()
         {
             BlowfishSendKey = blowfishSendKey;
             BlowfishReceiveKey = blowishReceiveKey;

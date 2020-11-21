@@ -1,4 +1,5 @@
 ﻿using FTServer.Contracts.Security;
+using System;
 
 namespace FTServer.Security
 {
@@ -6,18 +7,18 @@ namespace FTServer.Security
     {
         private const int _rollOver = 60;
         private int _sendIndex, _recvIndex;
-        private int _key;
+        private int _sendKey, _recvKey;
 
         public MessageSerialService()
         {
             _sendIndex = 0;
             _recvIndex = 0;
-            _key = 0;
+            _sendKey = 0;
         }
 
         public ushort ComputeSend(byte[] buffer, int offset)
         {
-            var idx = _key;
+            var idx = _sendKey;
             if (idx != -1)
             {
                 var currentIdx = _sendIndex;
@@ -36,7 +37,7 @@ namespace FTServer.Security
 
         public bool ValidateReceive(ushort serial)
         {
-            var idx = _key;
+            var idx = _recvKey;
             if (idx != -1)
             {
                 var currentIdx = _recvIndex;
@@ -50,6 +51,14 @@ namespace FTServer.Security
             }
 
             return true;
+        }
+
+        public void UpdateKeys(int sendKey, int receiveKey)
+        {
+            if (sendKey < -1 || sendKey > 4) throw new Exception("Invalid serial send key.");
+            if (receiveKey < -1 || receiveKey > 4) throw new Exception("Invalid serial send key.");
+            _sendKey = sendKey;
+            _recvKey = receiveKey;
         }
 
         private static readonly ushort[] SERIAL_TABLE =

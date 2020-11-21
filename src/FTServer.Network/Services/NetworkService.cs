@@ -69,6 +69,7 @@ namespace FTServer.Network.Services
                 {
                     var socket = args.AcceptSocket;
                     var stream = new NetworkStream(socket, true);
+                    stream.ReadTimeout = stream.WriteTimeout = 5000;
                     var userConnection = _serviceProvider.Create<INetworkContext>(_connectionType, new NetworkContextOptions(stream, socket.RemoteEndPoint, socket.LocalEndPoint));
                     var _ = userConnection.NotifyConnected();
                 }

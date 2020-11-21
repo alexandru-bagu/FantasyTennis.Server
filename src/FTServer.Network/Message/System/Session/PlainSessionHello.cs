@@ -1,15 +1,18 @@
 ﻿using FTServer.Contracts.MemoryManagement;
 
-namespace FTServer.Network.Message.Login
+namespace FTServer.Network.Message.System.Session
 {
+    /// <summary>
+    /// Message to initialize the encryption-less protocol. Serial keys will default to -1 and so all messages will begin with double 0.
+    /// </summary>
     [NetworkMessage(MessageId)]
-    public class PlainSession : NetworkMessage
+    public class PlainSessionHello : NetworkMessage
     {
         public const ushort MessageId = 0xFF9B;
         public override int MaximumSize => 8;
 
 
-        public PlainSession() : base(MessageId)
+        public PlainSessionHello() : base(MessageId)
         {
         }
 

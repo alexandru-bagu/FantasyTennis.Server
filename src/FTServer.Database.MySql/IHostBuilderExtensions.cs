@@ -5,6 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 public static class IHostBuilderExtensions
 {
+    internal static MySqlSettings ReadMySqlSettings(this IConfiguration configuration)
+    {
+        var settings = new { MySqlSettings = new MySqlSettings() };
+        configuration.Bind(settings);
+        return settings.MySqlSettings;
+    }
+
     public static IHostBuilder UseMySqlDatabase(this IHostBuilder hostBuilder)
     {
         hostBuilder.ConfigureAppConfiguration((context, builder) =>
@@ -14,11 +21,8 @@ public static class IHostBuilderExtensions
 
         return hostBuilder.UseDatabase<MySqlDbContext>((context, builder) =>
         {
-            var configuration = context.Configuration;
-            var settings = new { MySqlSettings = new MySqlSettings() };
-            configuration.Bind(settings);
-
-            builder.UseMySql(settings.MySqlSettings.ConnectionString, ServerVersion.AutoDetect(settings.MySqlSettings.ConnectionString));
+            var settings = context.Configuration.ReadMySqlSettings();
+            builder.UseMySql(settings.ConnectionString, ServerVersion.AutoDetect(settings.ConnectionString));
         });
     }
 }
