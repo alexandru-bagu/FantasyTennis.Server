@@ -12,6 +12,7 @@ namespace FTServer.Database.Model
 
         public int Ap { get; set; }
         public bool Enabled { get; set; }
+        public bool Online { get; set; }
         public SecurityLevel SecurityLevel { get; set; }
 
         public HashSet<Login> Logins { get; set; }

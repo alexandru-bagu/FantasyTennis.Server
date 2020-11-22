@@ -6,5 +6,6 @@ namespace FTServer.Contracts.MemoryManagement
     {
         IntPtr Pointer { get; }
         int Position { get; set; }
+        int Length { get; }
     }
 }

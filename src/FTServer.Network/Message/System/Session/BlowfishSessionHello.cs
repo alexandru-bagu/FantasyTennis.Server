@@ -1,4 +1,5 @@
 ﻿using FTServer.Contracts.MemoryManagement;
+using System;
 
 namespace FTServer.Network.Message.System.Session
 {
@@ -26,9 +27,7 @@ namespace FTServer.Network.Message.System.Session
 
         public override void Deserialize(IUnmanagedMemoryReader reader)
         {
-            base.Deserialize(reader);
-            BlowfishSendKey = reader.ReadBytes(16);
-            BlowfishReceiveKey = reader.ReadBytes(16);
+            throw new NotImplementedException();
         }
 
         public override void Serialize(IUnmanagedMemoryWriter writer)

@@ -12,6 +12,7 @@ namespace FTServer.Database.Model
         [Required] public string Hash { get; set; }
         [Required] public string Salt { get; set; }
         [Required] [EmailAddress] public string Email { get; set; }
+        public bool IsEmailVerified { get; set; }
         public DateTime? DisabledUntil { get; set; }
 
         [ForeignKey(nameof(AccountId))] public Account Account { get; set; }

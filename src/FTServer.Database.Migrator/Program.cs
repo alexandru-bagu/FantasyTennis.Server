@@ -44,8 +44,11 @@ namespace FTServer.Database.Migrator
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
+                .UseCore()
+                .UseSecurity()
                 .UseSQLiteDatabase()
                 //.UseMySqlDatabase()
+                .UseDatabaseSeed()
                 .ConfigureServices((hostContext, services) => services.AddHostedService<DatabaseMigrationWorker>());
     }
 }

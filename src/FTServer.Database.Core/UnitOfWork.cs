@@ -1,4 +1,6 @@
 ﻿using FTServer.Contracts.Database;
+using FTServer.Database.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +16,16 @@ namespace FTServer.Database.Core
         private readonly IServiceScope _serviceScope;
 
         public IDbContext DatabaseContext { get => _databaseContext; }
-        public bool AutoCommit { get; set; }
+        public DbSet<DataSeed> DataSeeds => _databaseContext.DataSeeds;
+        public DbSet<Account> Accounts => _databaseContext.Accounts;
+        public DbSet<Login> Logins => _databaseContext.Logins;
+        public DbSet<LoginAttempt> LoginAttempts => _databaseContext.LoginAttempts;
+        public DbSet<Character> Characters => _databaseContext.Characters;
+        public DbSet<Item> Items => _databaseContext.Items;
+        public DbSet<Home> Homes => _databaseContext.Homes;
+        public DbSet<Furniture> Furniture => _databaseContext.Furniture;
+        public DbSet<GameServer> GameServers => _databaseContext.GameServers;
+        public DbSet<RelayServer> RelayServers => _databaseContext.RelayServers;
 
         private IDbContextTransaction _transaction;
 
@@ -107,6 +118,16 @@ namespace FTServer.Database.Core
             {
                 _logger.LogTrace("End DisposeAsync");
             }
+        }
+
+        public void Attach<T>(T entity)
+        {
+            DatabaseContext.Attach(entity);
+        }
+
+        public void Detach<T>(T entity)
+        {
+            DatabaseContext.Detach(entity);
         }
     }
 }

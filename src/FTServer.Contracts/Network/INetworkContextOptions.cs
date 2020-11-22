@@ -7,6 +7,8 @@ namespace FTServer.Contracts.Network
     {
         Stream Stream { get; }
         EndPoint RemoteEndPoint { get; }
+        string RemoteIPAddress { get; }
         EndPoint LocalEndPoint { get; }
+        string LocalIPAddress { get; }
     }
 }

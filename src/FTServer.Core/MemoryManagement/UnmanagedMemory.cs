@@ -14,6 +14,7 @@ namespace FTServer.Core.MemoryManagement
         public IntPtr PointerStart { get => new IntPtr(_startPointer); }
         public IntPtr Pointer { get => new IntPtr(_currentPointer); }
         public int Position { get => (int)(_currentPointer - _startPointer); set => _currentPointer = _startPointer + value; }
+        public int Length { get => Size - Position; }
         public IUnmanagedMemoryReader Reader => this;
         public IUnmanagedMemoryWriter Writer => this;
         public UnmanagedMemory(int size) : this(Marshal.AllocHGlobal(size), size, true)
@@ -113,27 +114,37 @@ namespace FTServer.Core.MemoryManagement
             finally { _currentPointer += 8; }
         }
 
+        private static int _asciiCharSize = Encoding.ASCII.GetBytes("\0").Length;
+        private static int _unicodeCharSize = Encoding.Unicode.GetBytes("\0").Length;
+        private static int _getCharSize(Encoding encoding)
+        {
+            if (encoding != Encoding.ASCII && encoding != Encoding.Unicode)
+                throw new Exception($"Only ASCII and Unicode are supported.");
+            var charSize = _asciiCharSize;
+            if (encoding == Encoding.Unicode) charSize = _unicodeCharSize;
+            return charSize;
+        }
+
         char IUnmanagedMemoryReader.ReadCharacter(Encoding encoding)
         {
-            int size = 1;
-            while (encoding.GetCharCount(_currentPointer, size) == 0 && size < Size - Position) size++;
-
+            var charSize = _getCharSize(encoding);
             try
             {
                 char[] c = new char[1];
-                fixed (char* cptr = c) encoding.GetChars(_currentPointer, size, cptr, 1);
+                fixed (char* cptr = c) encoding.GetChars(_currentPointer, charSize, cptr, 1);
                 return c[0];
             }
-            finally { _currentPointer += size; }
+            finally { _currentPointer += charSize; }
         }
 
         string IUnmanagedMemoryReader.ReadString(Encoding encoding)
         {
+            var charSize = _getCharSize(encoding);
             IUnmanagedMemoryReader reader = this;
             var currentPtr = _currentPointer;
-            while (reader.ReadUInt16() != 0) ;
-            var length = _currentPointer - currentPtr - 2;
-            return Encoding.Unicode.GetString(currentPtr, (int)length);
+            while (!reader.ReadBytes(charSize).IsZero()) ;
+            var length = _currentPointer - currentPtr - charSize;
+            return encoding.GetString(currentPtr, (int)length);
         }
 
         byte[] IUnmanagedMemoryReader.ReadBytes(int length)

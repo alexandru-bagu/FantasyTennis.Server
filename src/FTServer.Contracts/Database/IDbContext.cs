@@ -6,15 +6,17 @@ namespace FTServer.Contracts.Database
 {
     public interface IDbContext : IDisposable, IAsyncDisposable
     {
-        DbSet<DataSeed> DataSeeds { get; set; }
-        DbSet<Account> Accounts { get; set; }
-        DbSet<Login> Logins { get; set; }
-        DbSet<LoginAttempt> LoginAttempts { get; set; }
-        DbSet<Character> Characters { get; set; }
-        DbSet<Item> Items { get; set; }
-        DbSet<Home> Homes { get; set; }
-        DbSet<Furniture> Furniture { get; set; }
-        DbSet<GameServer> GameServers { get; set; }
-        DbSet<RelayServer> RelayServers { get; set; }
+        DbSet<DataSeed> DataSeeds { get; }
+        DbSet<Account> Accounts { get; }
+        DbSet<Login> Logins { get; }
+        DbSet<LoginAttempt> LoginAttempts { get; }
+        DbSet<Character> Characters { get; }
+        DbSet<Item> Items { get; }
+        DbSet<Home> Homes { get; }
+        DbSet<Furniture> Furniture { get; }
+        DbSet<GameServer> GameServers { get; }
+        DbSet<RelayServer> RelayServers { get; }
+        void Attach<T>(T entity);
+        void Detach<T>(T entity);
     }
 }

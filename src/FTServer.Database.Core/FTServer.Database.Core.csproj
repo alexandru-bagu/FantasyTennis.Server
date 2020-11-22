@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FTServer.Contracts\FTServer.Contracts.csproj" />
     <ProjectReference Include="..\FTServer.Database.Model\FTServer.Database.Model.csproj" />
+    <ProjectReference Include="..\FTServer.Database.Seed\FTServer.Database.Seed.csproj" />
     <ProjectReference Include="..\FTServer\FTServer.csproj" />
   </ItemGroup>
 

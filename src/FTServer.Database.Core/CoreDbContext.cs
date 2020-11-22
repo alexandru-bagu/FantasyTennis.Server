@@ -57,5 +57,15 @@ namespace FTServer.Database.Core
         {
             await base.DisposeAsync();
         }
+
+        void IDbContext.Attach<T>(T entity)
+        {
+            base.Attach(entity);
+        }
+
+        public void Detach<T>(T entity)
+        {
+            base.Remove(entity);
+        }
     }
 }

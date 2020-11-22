@@ -6,8 +6,13 @@ namespace FTServer.Security
     {
         public ushort Compute(byte[] buffer, int offset)
         {
-            var s = (short)(buffer[0] + buffer[1] + buffer[4] + buffer[5] + buffer[6] + buffer[7]);
-            return (ushort)((s & 0x80000001) == 0 ? s + 1587 : s + 1568);
+            short s = (short)((short)buffer[offset + 0] + buffer[offset + 1] + buffer[offset + 4] + buffer[offset + 5] + buffer[offset + 6] + buffer[offset + 7]);
+            return (ushort)(((uint)s & 0x80000001) == 0 ? s + 1587 : s + 1568);
+        }
+
+        public bool Validate(byte[] buffer, int offset, int checksum)
+        {
+            return Compute(buffer, offset) == checksum;
         }
     }
 }

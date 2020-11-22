@@ -29,7 +29,7 @@ namespace FTServer.Security.Services
 
         public void Encrypt(byte[] buffer, int offset, int length)
         {
-            Decrypt(buffer, offset, buffer, offset, length);
+            Encrypt(buffer, offset, buffer, offset, length);
         }
 
         public void Encrypt(byte[] srcBuffer, int srcOffset, byte[] dstBuffer, int dstOffset, int length)

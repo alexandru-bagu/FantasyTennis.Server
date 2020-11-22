@@ -4,6 +4,7 @@
     "MinimumLevel": {
       "Default": "Verbose",
       "Override": {
+        "FTServer.Database.Core.UnitOfWork": "Warning",
         "Microsoft": "Warning",
         "System": "Warning"
       }

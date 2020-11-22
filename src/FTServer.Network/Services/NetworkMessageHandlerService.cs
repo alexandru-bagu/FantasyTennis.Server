@@ -20,12 +20,12 @@ namespace FTServer.Network.Services
         {
             _defaultMessageHandlers = new INetworkMessageHandler<TNetworkContext>[0];
             _messageHandlers = new ReadOnlyDictionary<ushort, INetworkMessageHandler<TNetworkContext>[]>(new Dictionary<ushort, INetworkMessageHandler<TNetworkContext>[]>());
+            _serviceProvider = serviceProvider;
 
             var currentDomain = AppDomain.CurrentDomain;
             foreach (var assembly in currentDomain.GetAssemblies())
                 createMessageHandlers(assembly);
             currentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
-            _serviceProvider = serviceProvider;
         }
 
         private void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
@@ -53,7 +53,7 @@ namespace FTServer.Network.Services
                             rwDict.Remove(attr.MessageId);
 
 
-                            var instance = (INetworkMessageHandler<TNetworkContext>)ActivatorUtilities.CreateInstance(_serviceProvider, inetMsgHandlerType);
+                            var instance = (INetworkMessageHandler<TNetworkContext>)ActivatorUtilities.CreateInstance(_serviceProvider, type);
                             handlers = handlers.Concat(new[] { instance }).ToArray();
 
 

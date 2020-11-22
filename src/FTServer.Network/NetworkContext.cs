@@ -29,8 +29,9 @@ namespace FTServer.Network
         private readonly INetworkMessageHandlerService<TNetworkContext> _networkMessageHandlerService;
         private readonly IMessageChecksumService _messageChecksumService;
         private readonly ICryptographyServiceFactory _cryptographyServiceFactory;
+
         private TNetworkContext _self;
-        
+        private bool _alignBuffer;
         private bool _saidHello;
         private bool _connected;
 
@@ -50,9 +51,6 @@ namespace FTServer.Network
             _processSend = new SemaphoreSlim(1);
             _sendStopwatch = new Stopwatch();
 
-            _connected = true;
-            _saidHello = false;
-
             Options = contextOptions;
             Logger = loggerFactory.CreateLogger<NetworkContext<TNetworkContext>>();
             MessageSerialService = serviceProvider.GetService<IMessageSerialService>();
@@ -64,6 +62,9 @@ namespace FTServer.Network
             _cryptographyServiceFactory = serviceProvider.GetService<ICryptographyServiceFactory>();
 
             _self = (TNetworkContext)(object)this;
+            _alignBuffer = false;
+            _connected = true;
+            _saidHello = false;
         }
 
         ~NetworkContext()
@@ -88,8 +89,6 @@ namespace FTServer.Network
             try
             {
                 int size = message.Serialize(buffer, 0);
-                if (size % 8 != 0)
-                    size += AlignBy8(buffer, 0);
                 await SendRawAsync(buffer, 0, size);
             }
             finally
@@ -98,26 +97,16 @@ namespace FTServer.Network
             }
         }
 
-        private unsafe int AlignBy8(byte[] buffer, int size)
-        {
-            fixed (byte* ptr = buffer)
-            {
-                var header = (NetworkMessageHeader*)ptr;
-                var extra = 8 - header->BodyLength % 8;
-                header->BodyLength += (ushort)extra;
-                return extra;
-            }
-        }
-
         public virtual async Task SendRawAsync(byte[] buffer, int offset, int size)
         {
             if (_connected)
             {
-                var local = ArrayPool<byte>.Shared.Rent(size);
+                int align = _alignBuffer ? 8 - (size % 8) : 0;
+                var local = ArrayPool<byte>.Shared.Rent(size + align + (_alignBuffer ? 1 : 0));
                 Buffer.BlockCopy(buffer, offset, local, 0, size);
                 if (!_sendStopwatch.IsRunning || (_sendStopwatch.IsRunning && _sendStopwatch.ElapsedMilliseconds <= NetworkCongestionTimeout))
                 {
-                    var _ = ProcessSend(local, 0, size);
+                    var _ = ProcessSend(local, 0, size, align);
                 }
                 else
                 {
@@ -127,7 +116,7 @@ namespace FTServer.Network
             }
         }
 
-        private async Task ProcessSend(byte[] buffer, int offset, int size)
+        private async Task ProcessSend(byte[] buffer, int offset, int size, int alignmentSize)
         {
             await _processSend.WaitAsync();
             try
@@ -140,13 +129,15 @@ namespace FTServer.Network
                         var header = (NetworkMessageHeader*)ptr;
                         header->Serial = MessageSerialService.ComputeSend(buffer, offset);
                         header->Checksum = _messageChecksumService.Compute(buffer, offset);
+                        header->BodyLength += (ushort)alignmentSize;
                     }
                 }
 #if DEBUG
                 LogPacket(buffer, offset, size, "Send");
 #endif
-                CryptographyService.Encrypt(buffer, offset, size);
-                await _connection.WriteAsync(buffer, offset, size);
+                CryptographyService.Encrypt(buffer, offset, size + alignmentSize);
+                if (_alignBuffer) buffer[offset + alignmentSize + size] = (byte)(alignmentSize ^ buffer[3]);
+                await _connection.WriteAsync(buffer, offset, size + alignmentSize + (_alignBuffer ? 1 : 0));
             }
             catch (SocketException ex)
             {
@@ -155,6 +146,7 @@ namespace FTServer.Network
             }
             finally
             {
+                ArrayPool<byte>.Shared.Return(buffer);
                 _sendStopwatch.Stop();
                 _processSend.Release();
             }
@@ -203,19 +195,34 @@ namespace FTServer.Network
                 while (!_cancellationTokenSource.IsCancellationRequested && _connected)
                 {
                     await ReadBlock(0, 8);
+                    var encryptedChecksumByte = _readBuffer[3];
                     CryptographyService.Decrypt(_readBuffer, 0, 8);
                     ushort length = (ushort)(_readBuffer[6] | (_readBuffer[7] << 8));
-                    await ReadBlock(8, length);
+                    await ReadBlock(8, length + (_alignBuffer ? 1 : 0));
                     if (length >= _readBuffer.Length) throw new Exception("Desynchronization error.");
                     CryptographyService.Decrypt(_readBuffer, 8, length);
-#if DEBUG
-                    LogPacket(_readBuffer, 0, length, "Recv");
-#endif
-                    var localChecksum = _messageChecksumService.Compute(_readBuffer, 0);
-                    ushort recvChecksum = (ushort)(_readBuffer[2] | (_readBuffer[3] << 8));
-                    if (recvChecksum == localChecksum)
+
+                    if (_alignBuffer)
                     {
+                        var v = (byte)(encryptedChecksumByte ^ _readBuffer[8 + length]);
+                        length -= v;
+                        _readBuffer[6] = (byte)(length & 0xFF);
+                        _readBuffer[7] = (byte)((length >> 8) & 0xFF);
+                    }
+
+                    ushort recvChecksum = (ushort)(_readBuffer[2] | (_readBuffer[3] << 8));
+                    if (_messageChecksumService.Validate(_readBuffer, 0, recvChecksum))
+                    {
+#if DEBUG
+                        LogPacket(_readBuffer, 0, length + 8, "{V} Recv");
+#endif
                         var _ = ProcessReceive(_networkMessageFactory.Create(_readBuffer, 0, length + 8));
+                    }
+                    else
+                    {
+#if DEBUG
+                        LogPacket(_readBuffer, 0, length + 8, "{I} Recv");
+#endif
                     }
                 }
             }
@@ -278,6 +285,7 @@ namespace FTServer.Network
             }
             await SendAsync(new BlowfishSessionHello(bfDecKey, bfEncKey));
             CryptographyService = _cryptographyServiceFactory.CreateBlowfish(new CryptographicOption(bfDecKey), new CryptographicOption(bfEncKey));
+            _alignBuffer = true;
         }
 
         protected async Task UseXorCryptography()

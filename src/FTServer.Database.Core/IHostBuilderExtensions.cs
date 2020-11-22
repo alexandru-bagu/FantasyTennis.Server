@@ -20,7 +20,6 @@ public static class IHostBuilderExtensions
             services.Add(new ServiceDescriptor(typeof(IRawDbContext), (serviceProvider) => serviceProvider.GetService<T>(), dbService.Lifetime));
 
             services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
-            services.AddSingleton<IDataSeedService, DataSeedService>();
         });
     }
 }

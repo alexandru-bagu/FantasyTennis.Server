@@ -1,9 +1,5 @@
-﻿using FTServer.Contracts.Security;
-using FTServer.Network;
-using FTServer.Network.Message.System.Session;
-using FTServer.Security;
+﻿using FTServer.Network;
 using System;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace FTServer.Authentication.Core

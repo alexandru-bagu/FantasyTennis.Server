@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FTServer.Database.Core.Services
+namespace FFTServer.Database.Seed.Services
 {
     public class DataSeedService : IDataSeedService
     {
