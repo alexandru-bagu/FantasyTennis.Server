@@ -11,6 +11,7 @@ namespace FTServer.Database.Model
         }
 
         public int MaximumInventoryCount { get; set; }
+        public byte Level { get; set; }
         public int Experience { get; set; }
         public bool Enabled { get; set; }
         public int Gold { get; set; }
@@ -22,7 +23,11 @@ namespace FTServer.Database.Model
         public byte Willpower { get; set; }
         public byte StatusPoints { get; set; }
 
+        public string Name { get; set; }
+        public bool IsCreated { get; set; }
         public bool NameChangeAllowed { get; set; }
+        [NotMapped] public bool UnknownBoolean { get; set; }
+        [NotMapped] public byte UnknownByte { get; set; }
 
         public int HairId { get; set; }
         public int FaceId { get; set; }

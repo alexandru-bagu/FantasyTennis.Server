@@ -13,6 +13,7 @@ using System.Buffers;
 using System.Diagnostics;
 using FTServer.Network.Message.System.Session;
 using System.Security.Cryptography;
+using FTServer.Contracts.Services.Database;
 
 namespace FTServer.Network
 {
@@ -37,6 +38,7 @@ namespace FTServer.Network
 
         protected ICryptographyService CryptographyService { get; set; }
         protected IMessageSerialService MessageSerialService { get; set; }
+        protected IUnitOfWorkFactory UnitOfWorkFactory { get; set; }
         protected ILogger Logger { get; private set; }
         public INetworkContextOptions Options { get; }
 
@@ -54,6 +56,7 @@ namespace FTServer.Network
             Options = contextOptions;
             Logger = loggerFactory.CreateLogger<NetworkContext<TNetworkContext>>();
             MessageSerialService = serviceProvider.GetService<IMessageSerialService>();
+            UnitOfWorkFactory = serviceProvider.GetService<IUnitOfWorkFactory>();
             CryptographyService = new PlainCryptographyService();
 
             _networkMessageFactory = serviceProvider.GetService<INetworkMessageFactory>();
@@ -85,15 +88,18 @@ namespace FTServer.Network
 
         public virtual async Task SendAsync(INetworkMessage message)
         {
-            var buffer = ArrayPool<byte>.Shared.Rent(message.MaximumSize);
-            try
+            if (_connected)
             {
-                int size = message.Serialize(buffer, 0);
-                await SendRawAsync(buffer, 0, size);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(buffer);
+                var buffer = ArrayPool<byte>.Shared.Rent(message.MaximumSize);
+                try
+                {
+                    int size = message.Serialize(buffer, 0);
+                    await SendRawAsync(buffer, 0, size);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(buffer);
+                }
             }
         }
 
@@ -229,7 +235,7 @@ namespace FTServer.Network
             catch (SocketException ex)
             {
                 await DisconnectAsync();
-                Logger.LogDebug(ex, "ProcessReceive");
+                Logger.LogTrace(ex, "ProcessReceive");
             }
             catch (Exception ex)
             {

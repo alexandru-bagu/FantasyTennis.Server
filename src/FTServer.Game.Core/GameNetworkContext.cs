@@ -1,24 +1,31 @@
-﻿using FTServer.Network;
+﻿using FTServer.Database.Model;
+using FTServer.Network;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace FTServer.Game.Core
 {
     public class GameNetworkContext : NetworkContext<GameNetworkContext>
     {
-        public GameNetworkContext(NetworkContextOptions contextOptions, IServiceProvider serviceProvider) : base(contextOptions, serviceProvider)
+        private readonly IConcurrentUserTrackingService _concurrentUserTrackingService;
+
+        public GameNetworkContext(NetworkContextOptions contextOptions, IServiceProvider serviceProvider,
+            IConcurrentUserTrackingService concurrentUserTrackingService) : base(contextOptions, serviceProvider)
         {
+            _concurrentUserTrackingService = concurrentUserTrackingService;
         }
 
-        protected override Task Connected()
+        public Character Character { get; set; }
+
+        protected override async Task Connected()
         {
-            return Task.CompletedTask;
+            await _concurrentUserTrackingService.Increment();
+            await UseXorCryptography();
         }
 
-        protected override Task Disconnected()
+        protected override async Task Disconnected()
         {
-            return Task.CompletedTask;
+            await _concurrentUserTrackingService.Decrement(); 
         }
     }
 }

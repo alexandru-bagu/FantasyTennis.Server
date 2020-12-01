@@ -35,6 +35,8 @@ namespace FTServer.Database.Core
                 .HasIndex(p => p.Name).IsUnique();
             modelBuilder.Entity<RelayServer>()
                 .HasIndex(p => p.Name).IsUnique();
+            modelBuilder.Entity<Character>()
+                .HasIndex(p => p.Name).IsUnique();
             base.OnModelCreating(modelBuilder);
         }
 

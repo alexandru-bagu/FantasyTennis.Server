@@ -3,14 +3,16 @@ using System;
 using FTServer.Database.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FTServer.Database.SQLite.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    partial class SQLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201201183525_added character and account fields; separated gameserver from relayservers;")]
+    partial class addedcharacterandaccountfieldsseparatedgameserverfromrelayservers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

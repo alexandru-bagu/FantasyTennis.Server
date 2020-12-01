@@ -1,4 +1,5 @@
 ﻿using FTServer.Game.Core;
+using FTServer.Game.Core.Services;
 using FTServer.Game.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ public static class IHostBuilderExtensions
             .ConfigureServices((context, services) =>
             {
                 services.Configure<AppSettings>(context.Configuration);
+                services.AddSingleton<IConcurrentUserTrackingService, ConcurrentUserTrackingService>();
                 services.AddHostedService<GameKernel>();
             });
     }

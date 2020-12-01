@@ -4,9 +4,11 @@ using FTServer.Contracts.Services.Database;
 using FTServer.Database.Model;
 using FTServer.Network;
 using FTServer.Network.Message.Authentication;
+using FTServer.Network.Message.Synchronization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,13 +35,42 @@ namespace FTServer.Authentication.Core.Network
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
+            var result = await Authenticate(message, context);
+            if (result == AuthenticationResult.Success)
+            {
+                await context.SendAsync(new AuthenticationResponse(result)
+                {
+                    Data = new AccountData()
+                    {
+                        AccountId = context.Account.Id,
+                        Key1 = context.Account.Key1,
+                        Key2 = context.Account.Key2,
+                    }
+                });
+                List<Character> characterList = new List<Character>();
+                await using (var uow = await _unitOfWorkFactory.Create())
+                    characterList = uow.Characters.Where(p => p.AccountId == context.Account.Id).ToList();
+                await context.SendAsync(new CharacterListResponse()
+                {
+                    Characters = characterList,
+                    SelectedCharacterId = context.Account.LastCharacterId
+                });
+            }
+            else
+            {
+                await context.SendAsync(new AuthenticationResponse(result));
+            }
+        }
+
+        private async Task<AuthenticationResult> Authenticate(INetworkMessage message, AuthenticationNetworkContext context)
+        {
             await _authenticationSemaphore.WaitAsync();
             try
             {
+                AuthenticationResult result = AuthenticationResult.Unknown;
                 if (message is AuthenticationRequest request)
                 {
                     _logger.LogInformation($"User login attempt: {request.Username} with password: {request.Password} with client version: {request.ClientLongVersion}");
-                    AuthenticationResult result = AuthenticationResult.Unknown;
                     try
                     {
                         await using (var uow = await _unitOfWorkFactory.Create())
@@ -84,7 +115,11 @@ namespace FTServer.Authentication.Core.Network
                                                 else
                                                 {
                                                     account.Online = true;
+
+                                                    account.Key1 = _secureHashProvider.RandomInt();
+                                                    account.Key2 = _secureHashProvider.RandomInt();
                                                     result = AuthenticationResult.Success;
+                                                    context.Account = account;
                                                 }
                                             }
                                         }
@@ -100,8 +135,8 @@ namespace FTServer.Authentication.Core.Network
                         result = AuthenticationResult.Unknown;
                         _logger.LogError(ex, "Process");
                     }
-                    await context.SendAsync(new AuthenticationResponse(result));
                 }
+                return result;
             }
             finally
             {

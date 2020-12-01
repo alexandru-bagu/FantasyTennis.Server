@@ -1,4 +1,5 @@
 ﻿using FTServer.Contracts.Security;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,6 +7,12 @@ namespace FTServer.Security.Services
 {
     public class SecureHashProvider : ISecureHashProvider
     {
+        private RNGCryptoServiceProvider _random;
+        public SecureHashProvider()
+        {
+            _random = new RNGCryptoServiceProvider();
+        }
+
         public string Hash(string input)
         {
             // Create a SHA256   
@@ -33,10 +40,16 @@ namespace FTServer.Security.Services
 
         public string Random(int length)
         {
-            var random = new RNGCryptoServiceProvider();
             byte[] buffer = new byte[length / 2];
-            random.GetBytes(buffer);
+            _random.GetBytes(buffer);
             return HexFromBytes(buffer);
+        }
+
+        public int RandomInt()
+        {
+            byte[] buffer = new byte[4];
+            _random.GetBytes(buffer);
+            return BitConverter.ToInt32(buffer);
         }
 
         private string HexFromBytes(byte[] bytes)

@@ -10,12 +10,7 @@ namespace FTServer.Network.Message.Authentication
         public override int MaximumSize => 40;
 
         public AuthenticationResult Result { get; set; }
-        public int Unknown1 { get; set; }
-        public int Unknown2 { get; set; }
-        public int Unknown3 { get; set; }
-        public int Unknown4 { get; set; }
-        public int Unknown5 { get; set; }
-        public int Unknown6 { get; set; }
+        public AccountData Data { get; set; }
 
         public AuthenticationResponse() : base(MessageId)
         {
@@ -37,12 +32,12 @@ namespace FTServer.Network.Message.Authentication
             writer.Write((short)Result);
             if (Result == AuthenticationResult.Success)
             {
-                writer.Write(Unknown1);
-                writer.Write(Unknown2);
-                writer.Write(Unknown3);
-                writer.Write(Unknown4);
-                writer.Write(Unknown5);
-                writer.Write(Unknown6);
+                writer.Write(Data.AccountId);
+                writer.Write(Data.Unknown2);
+                writer.Write(Data.Unknown3);
+                writer.Write(Data.Unknown4);
+                writer.Write(Data.Key1);
+                writer.Write(Data.Key2);
             }
         }
     }

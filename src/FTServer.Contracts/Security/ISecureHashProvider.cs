@@ -5,5 +5,6 @@
         string Hash(string input);
         string LongHash(string input);
         string Random(int length);
+        int RandomInt();
     }
 }

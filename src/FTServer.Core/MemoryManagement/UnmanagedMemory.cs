@@ -159,6 +159,12 @@ namespace FTServer.Core.MemoryManagement
         }
         #endregion
         #region IUnmanagedMemoryWriter
+        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.Write(bool value)
+        {
+            try { *_currentPointer = (byte)(value ? 1 : 0); return this; }
+            finally { _currentPointer++; }
+        }
+
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.Write(byte value)
         {
             try { *_currentPointer = value; return this; }
@@ -234,12 +240,13 @@ namespace FTServer.Core.MemoryManagement
             finally { _currentPointer += size; }
         }
 
-        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.Write(string value, Encoding encoding)
+        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.Write(string value, Encoding encoding, int maxLength)
         {
             int size = 0;
             try
             {
-                var @null = value + "\0";
+                if (value == null) value = "";
+                var @null = value.Substring(0, Math.Min(value.Length, maxLength)) + "\0";
                 fixed (char* cptr = @null)
                 {
                     size = encoding.GetBytes(cptr, @null.Length, _currentPointer, Size - Position);
@@ -259,6 +266,7 @@ namespace FTServer.Core.MemoryManagement
             finally { _currentPointer += value.Length; }
         }
 
+        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteBoolean(bool value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteByte(byte value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteSByte(sbyte value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteUInt16(ushort value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
@@ -270,7 +278,7 @@ namespace FTServer.Core.MemoryManagement
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteSingle(float value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteDouble(double value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteCharacter(char value, Encoding encoding) { IUnmanagedMemoryWriter writer = this; writer.Write(value, encoding); return this; }
-        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteString(string value, Encoding encoding) { IUnmanagedMemoryWriter writer = this; writer.Write(value, encoding); return this; }
+        IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteString(string value, Encoding encoding, int maxLength) { IUnmanagedMemoryWriter writer = this; writer.Write(value, encoding, maxLength); return this; }
         IUnmanagedMemoryWriter IUnmanagedMemoryWriter.WriteBytes(byte[] value) { IUnmanagedMemoryWriter writer = this; writer.Write(value); return this; }
         #endregion
     }

@@ -1,4 +1,6 @@
-﻿using FTServer.Contracts.MemoryManagement;
+﻿using FTServer.Contracts.Game;
+using FTServer.Contracts.MemoryManagement;
+using FTServer.Contracts.Services.Game;
 using FTServer.Core.Services.MemoryManagement;
 using FTServer.Core.Settings;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +19,7 @@ public static class IHostBuilderExtensions
             .ConfigureServices((context, services) =>
             {
                 services.Configure<CoreSettings>(context.Configuration);
-
+                services.AddSingleton<ICharacterStatValidationService, CharacterStatValidationService>();
                 services.AddSingleton<IUnmanagedMemoryService, UnmanagedMemoryService>();
             });
     }

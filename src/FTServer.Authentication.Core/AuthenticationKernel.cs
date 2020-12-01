@@ -43,7 +43,7 @@ namespace FTServer.Authentication.Core
             {
                 await using (var uow = await _unitOfWorkFactory.Create())
                 {
-                    (await uow.Accounts.Where(p => p.Online).Select(p => new Account() { Id = p.Id }).ToListAsync())
+                    (await uow.Accounts.Where(p => p.Online).Select(p => new Account() { Id = p.Id, Online = p.Online }).ToListAsync())
                         .ForEach(p => { uow.Attach(p); p.Online = false; });
                     await uow.CommitAsync();
                 }

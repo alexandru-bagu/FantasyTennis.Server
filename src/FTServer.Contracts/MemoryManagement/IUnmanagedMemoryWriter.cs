@@ -5,6 +5,7 @@ namespace FTServer.Contracts.MemoryManagement
 {
     public interface IUnmanagedMemoryWriter : ISeekableMemory
     {
+        IUnmanagedMemoryWriter Write(bool value);
         IUnmanagedMemoryWriter Write(byte value);
         IUnmanagedMemoryWriter Write(sbyte value);
         IUnmanagedMemoryWriter Write(ushort value);
@@ -16,9 +17,10 @@ namespace FTServer.Contracts.MemoryManagement
         IUnmanagedMemoryWriter Write(float value);
         IUnmanagedMemoryWriter Write(double value);
         IUnmanagedMemoryWriter Write(char value, Encoding encoding);
-        IUnmanagedMemoryWriter Write(string value, Encoding encoding);
+        IUnmanagedMemoryWriter Write(string value, Encoding encoding, int maxLength);
         IUnmanagedMemoryWriter Write(byte[] value);
 
+        IUnmanagedMemoryWriter WriteBoolean(bool value);
         IUnmanagedMemoryWriter WriteByte(byte value);
         IUnmanagedMemoryWriter WriteSByte(sbyte value);
         IUnmanagedMemoryWriter WriteUInt16(ushort value);
@@ -30,7 +32,7 @@ namespace FTServer.Contracts.MemoryManagement
         IUnmanagedMemoryWriter WriteSingle(float value);
         IUnmanagedMemoryWriter WriteDouble(double value);
         IUnmanagedMemoryWriter WriteCharacter(char value, Encoding encoding);
-        IUnmanagedMemoryWriter WriteString(string value, Encoding encoding);
+        IUnmanagedMemoryWriter WriteString(string value, Encoding encoding, int maxLength);
         IUnmanagedMemoryWriter WriteBytes(byte[] value);
     }
 }

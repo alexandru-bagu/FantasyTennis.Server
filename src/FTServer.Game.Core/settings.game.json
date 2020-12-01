@@ -1,7 +1,8 @@
 {
   "GameServer": {
     "Name": "Game-Chat-1",
-
+    "ShowName": false,
+    "Type": 0,
     "Network": {
       "Host": "127.0.0.1",
       "Port": 5895

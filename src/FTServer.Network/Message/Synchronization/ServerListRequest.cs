@@ -2,12 +2,14 @@
 
 namespace FTServer.Network.Message
 {
-    public class UnknownNetworkMessage : NetworkMessage
+    [NetworkMessage(MessageId)]
+    public class ServerListRequest : NetworkMessage
     {
+        public const ushort MessageId = 0x100F;
         public override int MaximumSize => 4096;
         public byte[] Body { get; set; }
 
-        public UnknownNetworkMessage() : base(0)
+        public ServerListRequest() : base(MessageId)
         {
             Body = new byte[0];
         }
