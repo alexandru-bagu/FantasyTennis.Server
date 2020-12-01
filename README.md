@@ -5,7 +5,7 @@ Welcome to Fantasy Tennis Server. This is a server emulator for the Fantasy Tenn
 I am working on it in my spare time, after my full-time job so progress will be quick. The main target of this project is to sharpen my RE skills, and so while some may consider it a waste of time, I will try to document as much as possible from the client-side.
 
 ## Demo
-We are not there yet. At the moment the server knows only how to say hello, nothing more. At some later time I will make available simple scripts to build and run the server.
+We are not there yet. Authentication is handled. You can login and create a character. Single player is not yet available.
 
 ## Progress
 * Project architecture is complete (or atleast the skeleton)
