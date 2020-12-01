@@ -51,7 +51,7 @@ namespace FTServer.Service.Windows
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .UseMySqlDatabase()
+                //.UseMySqlDatabase()
                 .UseSQLiteDatabase()
                 .UseAuthenticationServer()
                 .UseGameServer()
