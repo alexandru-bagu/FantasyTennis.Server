@@ -11,21 +11,20 @@ namespace FTServer.Authentication.Core.Network
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public DisconnectMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
+        public DisconnectMessageHandler( IUnitOfWorkFactory unitOfWorkFactory)
         {
             _unitOfWorkFactory = unitOfWorkFactory;
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
-            if (context.Account != null)
+            if (await context.FaultyState(AuthenticationState.Online)) return;
+            context.State = AuthenticationState.Offline;
+            await using (var uow = await _unitOfWorkFactory.Create())
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
-                {
-                    uow.Attach(context.Account);
-                    context.Account.Online = false;
-                    await uow.CommitAsync();
-                }
+                uow.Attach(context.Account);
+                context.Account.Online = false;
+                await uow.CommitAsync();
             }
             await context.SendAsync(new DisconnectResponse());
         }

@@ -22,6 +22,7 @@ namespace FTServer.Authentication.Core.Network
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
+            if (await context.FaultyState(AuthenticationState.Online)) return;
             List<GameServer> servers;
             await using (var uow = await _unitOfWorkFactory.Create())
                 servers = await uow.GameServers.Where(p => p.Enabled).ToListAsync();

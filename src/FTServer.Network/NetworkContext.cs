@@ -148,7 +148,12 @@ namespace FTServer.Network
             catch (SocketException ex)
             {
                 await DisconnectAsync();
-                Logger.LogDebug(ex, "ProcessSend");
+                Logger.LogTrace(ex.Message, "ProcessSend");
+            }
+            catch (IOException ex)
+            {
+                await DisconnectAsync();
+                Logger.LogTrace(ex.Message, "ProcessSend");
             }
             finally
             {
@@ -235,7 +240,12 @@ namespace FTServer.Network
             catch (SocketException ex)
             {
                 await DisconnectAsync();
-                Logger.LogTrace(ex, "ProcessReceive");
+                Logger.LogTrace(ex.Message, "ProcessReceive");
+            }
+            catch (IOException ex)
+            {
+                await DisconnectAsync();
+                Logger.LogTrace(ex.Message, "ProcessReceive");
             }
             catch (Exception ex)
             {

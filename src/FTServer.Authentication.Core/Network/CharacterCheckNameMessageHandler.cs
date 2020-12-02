@@ -1,10 +1,8 @@
 ﻿using FTServer.Contracts.Network;
 using FTServer.Contracts.Services.Database;
-using FTServer.Database.Model;
 using FTServer.Network;
 using FTServer.Network.Message.Character;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,17 +11,16 @@ namespace FTServer.Authentication.Core.Network
     [NetworkMessageHandler(CheckCharacterNameRequest.MessageId)]
     public class CharacterCheckNameMessageHandler : INetworkMessageHandler<AuthenticationNetworkContext>
     {
-        private readonly ILogger<DefaultNetworkMessageHandler> _logger;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public CharacterCheckNameMessageHandler(ILogger<DefaultNetworkMessageHandler> logger, IUnitOfWorkFactory unitOfWorkFactory)
+        public CharacterCheckNameMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
         {
-            _logger = logger;
             _unitOfWorkFactory = unitOfWorkFactory;
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
+            if (await context.FaultyState(AuthenticationState.Online)) return;
             if (message is CheckCharacterNameRequest checkName)
             {
                 int count = 0;

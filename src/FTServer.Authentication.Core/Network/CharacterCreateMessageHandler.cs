@@ -4,7 +4,6 @@ using FTServer.Contracts.Services.Database;
 using FTServer.Network;
 using FTServer.Network.Message.Character;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,19 +12,18 @@ namespace FTServer.Authentication.Core.Network
     [NetworkMessageHandler(CreateCharacterRequest.MessageId)]
     public class CharacterCreateMessageHandler : INetworkMessageHandler<AuthenticationNetworkContext>
     {
-        private readonly ILogger<DefaultNetworkMessageHandler> _logger;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly ICharacterStatValidationService _characterStatValidationService;
 
-        public CharacterCreateMessageHandler(ILogger<DefaultNetworkMessageHandler> logger, IUnitOfWorkFactory unitOfWorkFactory, ICharacterStatValidationService characterStatValidationService)
+        public CharacterCreateMessageHandler(IUnitOfWorkFactory unitOfWorkFactory, ICharacterStatValidationService characterStatValidationService)
         {
-            _logger = logger;
             _unitOfWorkFactory = unitOfWorkFactory;
             _characterStatValidationService = characterStatValidationService;
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
+            if (await context.FaultyState(AuthenticationState.Online)) return;
             var success = await CreateCharacter(message, context);
             await context.SendAsync(new CreateCharacterResponse() { Failure = !success });
         }

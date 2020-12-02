@@ -3,7 +3,6 @@ using FTServer.Contracts.Services.Database;
 using FTServer.Network;
 using FTServer.Network.Message.Authentication;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,20 +12,20 @@ namespace FTServer.Game.Core.Network
     [NetworkMessageHandler(GameAuthenticationRequest.MessageId)]
     public class GameAuthenticationMessageHandler : INetworkMessageHandler<GameNetworkContext>
     {
-        private readonly ILogger<GameAuthenticationMessageHandler> _logger;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly SemaphoreSlim _authenticationSemaphore;
 
-        public GameAuthenticationMessageHandler(ILogger<GameAuthenticationMessageHandler> logger, IUnitOfWorkFactory unitOfWorkFactory)
+        public GameAuthenticationMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
         {
-            _logger = logger;
             _unitOfWorkFactory = unitOfWorkFactory;
             _authenticationSemaphore = new SemaphoreSlim(1);
         }
 
         public async Task Process(INetworkMessage message, GameNetworkContext context)
         {
+            if (await context.FaultyState(GameState.Authenticate)) return;
             var success = await Authenticate(message, context);
+            if (!success) context.State = GameState.Offline;
             await context.SendAsync(new GameAuthenticationResponse() { Failure = !success });
         }
 
@@ -49,6 +48,7 @@ namespace FTServer.Game.Core.Network
                         }
                         else
                         {
+                            context.State = GameState.SynchronizeExperience;
                             context.Character = character;
                             character.Account.Online = true;
                             await uow.CommitAsync();

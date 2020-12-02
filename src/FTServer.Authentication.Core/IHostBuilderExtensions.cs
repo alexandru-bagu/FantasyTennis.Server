@@ -1,4 +1,5 @@
 ﻿using FTServer.Authentication.Core;
+using FTServer.Authentication.Core.Services;
 using FTServer.Authentication.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ public static class IHostBuilderExtensions
             .ConfigureServices((context, services) =>
             {
                 services.Configure<AppSettings>(context.Configuration);
+                services.AddSingleton<IAuthenticationSynchronizationContextService, AuthenticationSynchronizationContextService>();
                 services.AddHostedService<AuthenticationKernel>();
             });
     }

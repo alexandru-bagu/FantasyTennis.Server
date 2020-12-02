@@ -21,20 +21,21 @@ namespace FTServer.Authentication.Core.Network
         private const int ClientLongVersion = 21108180;
 
         private readonly ILogger<AuthenticationMessageHandler> _logger;
+        private readonly IAuthenticationSynchronizationContextService _authenticationSynchronizationContextService;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly ISecureHashProvider _secureHashProvider;
-        private readonly SemaphoreSlim _authenticationSemaphore;
 
-        public AuthenticationMessageHandler(ILogger<AuthenticationMessageHandler> logger, IUnitOfWorkFactory unitOfWorkFactory, ISecureHashProvider secureHashProvider)
+        public AuthenticationMessageHandler(ILogger<AuthenticationMessageHandler> logger, IAuthenticationSynchronizationContextService authenticationSynchronizationContextService, IUnitOfWorkFactory unitOfWorkFactory, ISecureHashProvider secureHashProvider)
         {
             _logger = logger;
+            _authenticationSynchronizationContextService = authenticationSynchronizationContextService;
             _unitOfWorkFactory = unitOfWorkFactory;
             _secureHashProvider = secureHashProvider;
-            _authenticationSemaphore = new SemaphoreSlim(1);
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
         {
+            if (await context.FaultyState(AuthenticationState.Authenticate)) return;
             var result = await Authenticate(message, context);
             if (result == AuthenticationResult.Success)
             {
@@ -50,21 +51,23 @@ namespace FTServer.Authentication.Core.Network
                 List<Character> characterList = new List<Character>();
                 await using (var uow = await _unitOfWorkFactory.Create())
                     characterList = uow.Characters.Where(p => p.AccountId == context.Account.Id).ToList();
-                await context.SendAsync(new CharacterListResponse()
+                await context.SendAsync(new CharacterListMessage()
                 {
                     Characters = characterList,
                     SelectedCharacterId = context.Account.LastCharacterId
                 });
+                context.State = AuthenticationState.Online;
             }
             else
             {
+                context.State = AuthenticationState.Offline;
                 await context.SendAsync(new AuthenticationResponse(result));
             }
         }
 
         private async Task<AuthenticationResult> Authenticate(INetworkMessage message, AuthenticationNetworkContext context)
         {
-            await _authenticationSemaphore.WaitAsync();
+            await _authenticationSynchronizationContextService.Acquire();
             try
             {
                 AuthenticationResult result = AuthenticationResult.Unknown;
@@ -140,7 +143,7 @@ namespace FTServer.Authentication.Core.Network
             }
             finally
             {
-                _authenticationSemaphore.Release();
+                _authenticationSynchronizationContextService.Release();
             }
         }
     }

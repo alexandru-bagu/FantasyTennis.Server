@@ -18,14 +18,12 @@ namespace FTServer.Game.Core.Network
 
         public async Task Process(INetworkMessage message, GameNetworkContext context)
         {
-            if (context.Character != null)
+            if (await context.FaultyMinimumState(GameState.Authenticate)) return;
+            await using (var uow = await _unitOfWorkFactory.Create())
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
-                {
-                    uow.Attach(context.Character.Account);
-                    context.Character.Account.Online = false;
-                    await uow.CommitAsync();
-                }
+                uow.Attach(context.Character.Account);
+                context.Character.Account.Online = false;
+                await uow.CommitAsync();
             }
             await context.SendAsync(new DisconnectResponse());
         }

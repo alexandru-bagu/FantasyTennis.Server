@@ -26,8 +26,12 @@ namespace FTServer.Database.Model
         public string Name { get; set; }
         public bool IsCreated { get; set; }
         public bool NameChangeAllowed { get; set; }
-        [NotMapped] public bool UnknownBoolean { get; set; }
-        [NotMapped] public byte UnknownByte { get; set; }
+        public bool NameChangeByIcon { get; set; }
+
+        /// <summary>
+        /// CCharacter::UnknownByte1
+        /// </summary>
+        [NotMapped] public byte UnknownByte1 { get; set; }
 
         public int HairId { get; set; }
         public int FaceId { get; set; }

@@ -21,7 +21,7 @@ namespace FTServer.Authentication.Core
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly AppSettings _appSettings;
         private INetworkService<AuthenticationNetworkContext> _authenticationNetworkService;
-
+        
         public AuthenticationKernel(ILogger<AuthenticationKernel> logger,
             IServiceProvider serviceProvider,
             INetworkServiceFactory networkServiceFactory,
