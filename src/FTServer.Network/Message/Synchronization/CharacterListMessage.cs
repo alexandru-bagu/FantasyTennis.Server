@@ -58,7 +58,7 @@ namespace FTServer.Network.Message.Synchronization
                 writer.WriteString(character.Name, Encoding.Unicode, 12);
                 writer.WriteByte(character.Level);
                 writer.WriteBoolean(character.IsCreated);
-                writer.WriteByte(character.UnknownByte1 = 1);
+                writer.WriteByte(character.UnknownByte1);
                 writer.WriteInt32(character.Gold);
                 writer.WriteByte((byte)character.Type);
                 writer.WriteByte(character.Strength);
@@ -66,6 +66,7 @@ namespace FTServer.Network.Message.Synchronization
                 writer.WriteByte(character.Dexterity);
                 writer.WriteByte(character.Willpower);
                 writer.WriteByte(character.StatusPoints);
+                //TODO: handle name change
                 writer.WriteBoolean(character.NameChangeAllowed && !character.NameChangeByIcon);
                 writer.WriteBoolean(character.NameChangeAllowed && character.NameChangeByIcon);
                 writer.Write(character.HairId);

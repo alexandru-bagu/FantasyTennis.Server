@@ -39,7 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Network", "src\FTS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Database.SQLite", "src\FTServer.Database.SQLite\FTServer.Database.SQLite.csproj", "{1CEBAF3D-FDE6-4D2A-BB4E-E86CA4067DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTServer.Database.Seed", "src\FTServer.Database.Seed\FTServer.Database.Seed.csproj", "{AA51CA84-E57A-4D9F-B02A-FC61584700D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTServer.Database.Seed", "src\FTServer.Database.Seed\FTServer.Database.Seed.csproj", "{AA51CA84-E57A-4D9F-B02A-FC61584700D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTServer.Resources", "src\FTServer.Resources\FTServer.Resources.csproj", "{B0A589E0-870F-4C8A-9218-268E844F5A6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +109,10 @@ Global
 		{AA51CA84-E57A-4D9F-B02A-FC61584700D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA51CA84-E57A-4D9F-B02A-FC61584700D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA51CA84-E57A-4D9F-B02A-FC61584700D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A589E0-870F-4C8A-9218-268E844F5A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A589E0-870F-4C8A-9218-268E844F5A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A589E0-870F-4C8A-9218-268E844F5A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A589E0-870F-4C8A-9218-268E844F5A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +136,7 @@ Global
 		{29650499-2642-4CED-A2D9-AA504BDF12F1} = {01C3F530-65D5-4273-A521-67F2A01BD9BA}
 		{1CEBAF3D-FDE6-4D2A-BB4E-E86CA4067DCE} = {D3D7C6F5-4BA3-4B08-96BE-F4A53B0521E8}
 		{AA51CA84-E57A-4D9F-B02A-FC61584700D5} = {D3D7C6F5-4BA3-4B08-96BE-F4A53B0521E8}
+		{B0A589E0-870F-4C8A-9218-268E844F5A6B} = {01C3F530-65D5-4273-A521-67F2A01BD9BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E2DBB02E-793C-49CF-B939-A8172EFF4252}

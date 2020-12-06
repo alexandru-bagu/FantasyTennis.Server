@@ -23,5 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\FTServer.Core\FTServer.Core.csproj" />
     <ProjectReference Include="..\FTServer.Network\FTServer.Network.csproj" />
+    <ProjectReference Include="..\FTServer.Resources\FTServer.Resources.csproj" />
   </ItemGroup>
 </Project>

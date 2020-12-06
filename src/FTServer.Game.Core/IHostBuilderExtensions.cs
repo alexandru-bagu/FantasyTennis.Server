@@ -11,6 +11,7 @@ public static class IHostBuilderExtensions
     {
         return hostBuilder
             .UseCore()
+            .UseResources()
             .UseNetwork<GameNetworkContext>()
             .ConfigureAppConfiguration((context, builder) =>
             {
