@@ -4,8 +4,12 @@ namespace FTServer.Contracts.Resources
 {
     public interface IResourceCryptographyService
     {
-        Stream Create(Stream stream);
-        Stream Create(Stream stream, string key);
-        Stream Create(Stream stream, byte[] key);
+        Stream Read(Stream stream);
+        Stream Read(Stream stream, string key);
+        Stream Read(Stream stream, byte[] key);
+
+        Stream Write(Stream stream);
+        Stream Write(Stream stream, string key);
+        Stream Write(Stream stream, byte[] key);
     }
 }

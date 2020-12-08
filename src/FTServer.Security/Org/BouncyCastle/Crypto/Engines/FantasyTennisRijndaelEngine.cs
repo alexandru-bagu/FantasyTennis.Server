@@ -1,9 +1,12 @@
+using System;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Org.BouncyCastle.Crypto.Engines
 {
     public class FantasyTennisRijndaelEngine : RijndaelEngine, ICryptoTransform
     {
+        public byte ControlByte { get; set; }
         public bool CanReuseTransform => false;
 
         public bool CanTransformMultipleBlocks => false;
@@ -21,9 +24,15 @@ namespace Org.BouncyCastle.Crypto.Engines
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            byte[] output = new byte[OutputBlockSize];
-            ProcessBlock(inputBuffer, inputOffset, output, 0);
-            return output;
+            if (inputCount > 0)
+            {
+                byte[] input = new byte[InputBlockSize];
+                Buffer.BlockCopy(inputBuffer, 0, input, 0, inputCount);
+                byte[] output = new byte[OutputBlockSize];
+                ProcessBlock(input, inputOffset, output, 0);
+                return output.Take(inputCount).ToArray();
+            }
+            return new byte[0];
         }
     }
 }

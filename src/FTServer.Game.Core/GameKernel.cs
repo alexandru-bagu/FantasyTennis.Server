@@ -1,9 +1,7 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FTServer.Contracts.Resources;
 using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
 using FTServer.Database.Model;
@@ -22,7 +20,6 @@ namespace FTServer.Game.Core
         private readonly INetworkServiceFactory _networkServiceFactory;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IConcurrentUserTrackingService _concurrentUserTrackingService;
-        private readonly IResourceManager _resourceManager;
         private readonly AppSettings _appSettings;
         private INetworkService<GameNetworkContext> _gameNetworkService;
 
@@ -32,15 +29,15 @@ namespace FTServer.Game.Core
             INetworkMessageHandlerService<GameNetworkContext> networkMessageHandlerService,
             IUnitOfWorkFactory unitOfWorkFactory,
             IConcurrentUserTrackingService concurrentUserTrackingService,
-            IResourceManager resourceManager)
+            Contracts.Stores.IItemDataStore resx)
         {
             _logger = logger;
             _networkServiceFactory = networkServiceFactory;
             _unitOfWorkFactory = unitOfWorkFactory;
             _concurrentUserTrackingService = concurrentUserTrackingService;
-            _resourceManager = resourceManager;
             _appSettings = appSettings.Value;
             networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

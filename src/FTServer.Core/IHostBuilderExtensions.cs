@@ -6,6 +6,7 @@ using FTServer.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 public static class IHostBuilderExtensions
 {
@@ -14,7 +15,8 @@ public static class IHostBuilderExtensions
         return hostBuilder
             .ConfigureAppConfiguration((context, builder) =>
             {
-                builder.AddJsonFile("settings.core.json");
+                if (File.Exists("settings.core.json"))
+                    builder.AddJsonFile("settings.core.json");
             })
             .ConfigureServices((context, services) =>
             {

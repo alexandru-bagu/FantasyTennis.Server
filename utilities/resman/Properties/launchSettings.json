@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "resman": {
+      "commandName": "Project",
+      "commandLineArgs": "-a \"E:\\Games\\New folder\\Script\\Item\\Info_CardItem_Icon.set\""
+    }
+  }
+}

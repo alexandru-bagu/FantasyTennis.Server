@@ -15,7 +15,7 @@ namespace FTServer.Resources.Services
         public GameResourceManager(IOptions<AppSettings> appSettings, IResourceCryptographyService resourceCryptographyService)
         {
             var settings = appSettings.Value;
-            _rootDir = settings.Resources.Path;
+            _rootDir = settings.Resources?.Path ?? "";
             if (_rootDir.StartsWith("~/"))
             {
                 _rootDir = _rootDir.Replace("~/", "");
@@ -41,16 +41,29 @@ namespace FTServer.Resources.Services
             return res;
         }
 
-        private string GetEncryptedExtension(string path)
+        public string ConvertPath(string path)
+        {
+            var ext = GetConversionExtension(path);
+            return Path.ChangeExtension(path, ext);
+        }
+
+        public bool IsResourceEncrypted(string path)
+        {
+            var ext = Path.GetExtension(path);
+            return ext == ".set";
+        }
+
+        private string GetConversionExtension(string path)
         {
             if (path.EndsWith(".xml")) return ".set";
-            return null;
+            else if (path.EndsWith(".set")) return ".xml";
+            return Path.GetExtension(path) + ".unk";
         }
 
         private GameResource GetArchivedResource(string path)
         {
             string original = path;
-            var encryptedExtension = GetEncryptedExtension(path);
+            var encryptedExtension = GetConversionExtension(path);
             do
             {
                 path = Path.GetDirectoryName(path);
@@ -58,13 +71,15 @@ namespace FTServer.Resources.Services
                 {
                     string nonResPath = path;
                     path = path + ".res";
-                    string resPath = Path.Combine(_rootDir, path);
+                    string resPath = path;
+                    if (!string.IsNullOrWhiteSpace(_rootDir))
+                        resPath = Path.Combine(_rootDir, path);
                     if (File.Exists(resPath))
                     {
                         var fileStream = new FileStream(resPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                         var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Read);
                         var entryName = original.Substring(nonResPath.Length).TrimStart('/');
-                        ZipArchiveEntry zipEntry = null;
+                        ZipArchiveEntry zipEntry;
                         if (encryptedExtension == null)
                         {
                             zipEntry = zipArchive.GetEntry(entryName);
@@ -74,13 +89,21 @@ namespace FTServer.Resources.Services
                         {
                             zipEntry = zipArchive.GetEntry(Path.ChangeExtension(entryName, encryptedExtension));
                             if (zipEntry == null) return null;
-                            var cryptoStream = _resourceCryptographyService.Create(zipEntry.Open());
+                            var stream = zipEntry.Open();
+                            var cryptoStream = _resourceCryptographyService.Read(stream);
                             return new GameResource(original, cryptoStream, zipArchive, fileStream);
                         }
                     }
                 }
             } while (!string.IsNullOrWhiteSpace(path));
             return null;
+        }
+
+        public string ReadResource(string path)
+        {
+            using (var resource = GetResource(path))
+            using (var reader = new StreamReader(resource.Stream))
+                return reader.ReadToEnd().Trim('\0');
         }
     }
 }
