@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
+using FTServer.Contracts.Stores;
 using FTServer.Database.Model;
 using FTServer.Game.Core.Network;
 using FTServer.Game.Core.Settings;
@@ -28,8 +29,7 @@ namespace FTServer.Game.Core
             IOptions<AppSettings> appSettings,
             INetworkMessageHandlerService<GameNetworkContext> networkMessageHandlerService,
             IUnitOfWorkFactory unitOfWorkFactory,
-            IConcurrentUserTrackingService concurrentUserTrackingService,
-            Contracts.Stores.IItemDataStore resx)
+            IConcurrentUserTrackingService concurrentUserTrackingService)
         {
             _logger = logger;
             _networkServiceFactory = networkServiceFactory;
@@ -37,7 +37,6 @@ namespace FTServer.Game.Core
             _concurrentUserTrackingService = concurrentUserTrackingService;
             _appSettings = appSettings.Value;
             networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
-
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

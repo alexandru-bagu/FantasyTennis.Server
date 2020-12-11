@@ -37,7 +37,7 @@ namespace FTServer.Resources.Services
             {
                 res = GetArchivedResource(path);
             }
-            if (res == null) throw new FileNotFoundException();
+            if (res == null) throw new FileNotFoundException($"File {path} not found.");
             return res;
         }
 

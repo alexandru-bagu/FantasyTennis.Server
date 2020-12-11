@@ -12,7 +12,7 @@ namespace FTServer.Network.Message.Character
 
         public bool Failure => CharacterId == 0;
         public int CharacterId { get; set; }
-        public CharacterType Type { get; set; }
+        public HeroType Type { get; set; }
 
         public ReserveCharacterResponse() : base(MessageId)
         {

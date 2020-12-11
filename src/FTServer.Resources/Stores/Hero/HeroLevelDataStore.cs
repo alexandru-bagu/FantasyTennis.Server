@@ -1,7 +1,7 @@
-﻿using FTServer.Contracts.Resources;
+﻿using Dandraka.XmlUtilities;
+using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores.Hero;
 using System.Collections.Generic;
-using System.Xml;
 
 namespace FTServer.Resources.Stores.Hero
 {
@@ -11,19 +11,11 @@ namespace FTServer.Resources.Stores.Hero
 
         public HeroLevelDataStore(IResourceManager resourceManager)
         {
-            var xml = resourceManager.ReadResource(Resource);
+            var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(xml);
-
-            var nodes = xmlDocument.GetElementsByTagName("Exp");
             byte level = 0;
-            foreach (XmlNode node in nodes)
-            {
-                var valueAttribute = node.Attributes["Value"];
-                this.Add(level, int.Parse(valueAttribute.Value));
-                level++;
-            }
+            foreach (dynamic exp in resource.ExpList)
+                Add(level++, exp.Value);
         }
     }
 }

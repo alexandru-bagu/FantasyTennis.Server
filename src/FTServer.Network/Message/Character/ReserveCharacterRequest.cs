@@ -10,7 +10,7 @@ namespace FTServer.Network.Message.Character
 
         public override int MaximumSize => 9;
 
-        public CharacterType Type { get; set; }
+        public HeroType Type { get; set; }
 
         public ReserveCharacterRequest() : base(MessageId)
         {
@@ -19,7 +19,7 @@ namespace FTServer.Network.Message.Character
         public override void Deserialize(IUnmanagedMemoryReader reader)
         {
             base.Deserialize(reader);
-            Type = (CharacterType)reader.ReadByte();
+            Type = reader.ReadByte();
         }
 
         public override void Serialize(IUnmanagedMemoryWriter writer)

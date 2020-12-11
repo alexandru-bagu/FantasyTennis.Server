@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FTServer.Contracts.Stores;
 using System.IO;
+using FTServer.Resources.Stores;
 
 public static class IHostBuilderExtensions
 {
@@ -29,7 +30,9 @@ public static class IHostBuilderExtensions
 
                 services.AddSingleton<IHeroLevelDataStore, HeroLevelDataStore>();
                 services.AddSingleton<IPetLevelDataStore, PetLevelDataStore>();
-                services.AddSingleton<IItemDataStore, ItemDataStore>();
+                services.AddSingleton<IItemPartDataStore, ItemPartDataStore>();
+                services.AddSingleton<IShopItemDataStore, ShopItemDataStore>();
+                services.AddSingleton<IQuestDataStore, QuestDataStore>();
             });
     }
 }

@@ -22,7 +22,7 @@ namespace FTServer.Authentication.Core.Network
             if (await context.FaultyState(AuthenticationState.Online)) return;
             if (message is ReserveCharacterRequest createCharacter)
             {
-                if (createCharacter.Type != CharacterType.Niki && createCharacter.Type != CharacterType.LunLun)
+                if (createCharacter.Type != HeroType.Niki && createCharacter.Type != HeroType.LunLun)
                 {
                     await context.SendAsync(new ReserveCharacterResponse());
                 }

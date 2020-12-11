@@ -6,10 +6,10 @@ Res\Script\PubETC\Ini3\MapQuest.xml
 
 -- items
 Res\Script\Item\Item_Parts.xml
-Res\Script\Item\Item_Tools.xml
 
 
 -------------- later ---------------
+Res\Script\Item\Item_Tools.xml
 Res\Script\Item\Item_Enchant.xml
 Res\Script\Item\Item_House.xml
 Res\Script\Item\Item_HouseDeco.xml

@@ -2,6 +2,6 @@
 {
     public interface ICharacterStatValidationService
     {
-        bool IsValid(CharacterType type, byte level, byte strength, byte stamina, byte dexterity, byte willpower, byte statPoints);
+        bool IsValid(HeroType type, byte level, byte strength, byte stamina, byte dexterity, byte willpower, byte statPoints);
     }
 }
