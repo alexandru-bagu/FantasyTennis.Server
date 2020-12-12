@@ -21,7 +21,7 @@ namespace FTServer.Game.Core.Network.Messenger
             if (await context.FaultyState(GameState.Online)) return;
             if (message is MessengerContactListRequest request)
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                 {
                     context.Friends = await uow.GetFriendships(context.Character.Id);
                     await context.SendAsync(new MessengerContactListResponse() { Friends = context.Friends });

@@ -38,7 +38,7 @@ namespace FFTServer.Database.Seed.Services
                 _ran = true;
 
                 _logger.LogInformation($"Begin {nameof(SeedAsync)}");
-                await using (var unitOfWork = await _unitOfWorkFactory.Create())
+                await using (var unitOfWork = _unitOfWorkFactory.Create())
                 {
                     var dbContext = unitOfWork.DatabaseContext;
                     var baseType = typeof(IDataSeeder);

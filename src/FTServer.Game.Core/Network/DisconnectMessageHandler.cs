@@ -19,7 +19,7 @@ namespace FTServer.Game.Core.Network
         public async Task Process(INetworkMessage message, GameNetworkContext context)
         {
             if (await context.FaultyMinimumState(GameState.Authenticate)) return;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 uow.Attach(context.Character.Account);
                 context.Character.Account.Online = false;

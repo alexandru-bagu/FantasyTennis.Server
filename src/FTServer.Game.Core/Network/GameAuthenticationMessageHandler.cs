@@ -13,11 +13,13 @@ namespace FTServer.Game.Core.Network
     public class GameAuthenticationMessageHandler : INetworkMessageHandler<GameNetworkContext>
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly ICurrentServer _currentServer;
         private readonly SemaphoreSlim _authenticationSemaphore;
 
-        public GameAuthenticationMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
+        public GameAuthenticationMessageHandler(IUnitOfWorkFactory unitOfWorkFactory, ICurrentServer currentServer)
         {
             _unitOfWorkFactory = unitOfWorkFactory;
+            _currentServer = currentServer;
             _authenticationSemaphore = new SemaphoreSlim(1);
         }
 
@@ -36,7 +38,7 @@ namespace FTServer.Game.Core.Network
             {
                 if (message is GameAuthenticationRequest request)
                 {
-                    await using (var uow = await _unitOfWorkFactory.Create())
+                    await using (var uow = _unitOfWorkFactory.Create())
                     {
                         var character = await uow.Characters.Include(p => p.Account)
                             .Where(p => p.Id == request.CharacterId && !p.Account.Online &&
@@ -51,6 +53,7 @@ namespace FTServer.Game.Core.Network
                             context.State = GameState.SynchronizeExperience;
                             context.Character = character;
                             character.Account.Online = true;
+                            character.Account.ActiveServerId = _currentServer.Id;
                             await uow.CommitAsync();
                             return true;
                         }

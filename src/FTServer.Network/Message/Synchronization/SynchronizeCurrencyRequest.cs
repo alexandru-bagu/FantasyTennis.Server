@@ -1,15 +1,15 @@
 ﻿using FTServer.Contracts.MemoryManagement;
 using System;
 
-namespace FTServer.Network.Message
+namespace FTServer.Network.Message.Synchronization
 {
     [NetworkMessage(MessageId)]
-    public class ServerListRequest : NetworkMessage
+    public class SynchronizeCurrencyRequest : NetworkMessage
     {
-        public const ushort MessageId = 0x100F;
+        public const ushort MessageId = 0x1B60;
         public override int MaximumSize => 8;
 
-        public ServerListRequest() : base(MessageId)
+        public SynchronizeCurrencyRequest() : base(MessageId)
         {
         }
 

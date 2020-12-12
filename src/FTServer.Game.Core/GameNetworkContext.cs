@@ -32,6 +32,14 @@ namespace FTServer.Game.Core
         {
             State = GameState.Offline;
             await _concurrentUserTrackingService.Decrement();
+            await using (var uow =  UnitOfWorkFactory.Create())
+            {
+                uow.Attach(Character.Account);
+                Character.Account.Online = false;
+                Character.Account.ActiveServerId = null;
+                await uow.CommitAsync();
+            }
+
         }
         public async Task<bool> FaultyState(GameState expected)
         {

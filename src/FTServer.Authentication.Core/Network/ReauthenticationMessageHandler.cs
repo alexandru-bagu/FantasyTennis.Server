@@ -35,7 +35,7 @@ namespace FTServer.Authentication.Core.Network
             {
                 if (message is ReauthenticationRequest request)
                 {
-                    await using (var uow = await _unitOfWorkFactory.Create())
+                    await using (var uow = _unitOfWorkFactory.Create())
                     {
                         var account = await uow.Accounts
                             .Where(p => !p.Online && p.Id == request.Data.AccountId && p.Key1 == request.Data.Key1 && p.Key2 == request.Data.Key2)

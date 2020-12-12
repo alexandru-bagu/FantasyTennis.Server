@@ -64,7 +64,7 @@ namespace FTServer.Relay.Core
         private async Task<bool> IsServerEnabled()
         {
             RelayServer server = null;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 server = await uow.RelayServers.Where(p => p.Name == _appSettings.RelayServer.Name).FirstOrDefaultAsync();
                 if (server == null)
@@ -90,7 +90,7 @@ namespace FTServer.Relay.Core
         private async Task<bool> Heartbeat()
         {
             RelayServer server = null;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 server = await uow.RelayServers.Where(p => p.Name == _appSettings.RelayServer.Name).FirstOrDefaultAsync();
                 if (server == null) return false;

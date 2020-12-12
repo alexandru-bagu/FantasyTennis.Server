@@ -225,7 +225,7 @@ namespace FTServer.Network
                     if (_messageChecksumService.Validate(_readBuffer, 0, recvChecksum))
                     {
 #if DEBUG
-                        LogPacket(_readBuffer, 0, length + 8, "{V} Recv");
+                        LogPacket(_readBuffer, 0, length + 8, "Recv");
 #endif
                         var _ = ProcessReceive(_networkMessageFactory.Create(_readBuffer, 0, length + 8));
                     }

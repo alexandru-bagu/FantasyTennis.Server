@@ -1,19 +1,15 @@
 ﻿using FTServer.Contracts.Network;
-using FTServer.Contracts.Services.Database;
 using FTServer.Network;
 using FTServer.Network.Message.Synchronization;
 using System.Threading.Tasks;
 
-namespace FTServer.Game.Core.Network
+namespace FTServer.Game.Core.Network.Synchronization
 {
     [NetworkMessageHandler(CharacterSynchronizationRequest.MessageId)]
     public class CharacterSynchronizationMessageHandler : INetworkMessageHandler<GameNetworkContext>
     {
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-
-        public CharacterSynchronizationMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
+        public CharacterSynchronizationMessageHandler()
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
         }
 
         public async Task Process(INetworkMessage message, GameNetworkContext context)

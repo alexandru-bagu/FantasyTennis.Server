@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
-using FTServer.Contracts.Stores;
 using FTServer.Database.Model;
 using FTServer.Game.Core.Network;
 using FTServer.Game.Core.Settings;
@@ -69,7 +68,7 @@ namespace FTServer.Game.Core
         private async Task<bool> IsServerEnabled()
         {
             GameServer server = null;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow =  _unitOfWorkFactory.Create())
             {
                 server = await uow.GameServers.Where(p => p.Name == _appSettings.GameServer.Name).FirstOrDefaultAsync();
                 if (server == null)
@@ -97,7 +96,7 @@ namespace FTServer.Game.Core
         private async Task<bool> Heartbeat()
         {
             GameServer server = null;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow =  _unitOfWorkFactory.Create())
             {
                 server = await uow.GameServers.Where(p => p.Name == _appSettings.GameServer.Name).FirstOrDefaultAsync();
                 if (server == null) return false;

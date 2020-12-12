@@ -29,7 +29,7 @@ namespace FTServer.Authentication.Core.Network
                 else
                 {
                     var character = new Character();
-                    await using (var uow = await _unitOfWorkFactory.Create())
+                    await using (var uow = _unitOfWorkFactory.Create())
                     {
                         character.Type = createCharacter.Type;
                         character.IsCreated = false;

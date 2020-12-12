@@ -20,7 +20,7 @@ namespace FTServer.Authentication.Core.Network
         {
             if (await context.FaultyState(AuthenticationState.Online)) return;
             context.State = AuthenticationState.Offline;
-            await using (var uow = await _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 uow.Attach(context.Account);
                 context.Account.Online = false;

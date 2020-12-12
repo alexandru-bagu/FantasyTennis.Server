@@ -28,9 +28,9 @@ namespace FTServer.Game.Core.Services
             await _semaphore.WaitAsync();
             try
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                 {
-                    _gameServer = await uow.GameServers.Where(p => p.Name == _options.GameServer.Name).FirstOrDefaultAsync();
+                    _gameServer = await uow.GameServers.Where(p => p.Name == _options.GameServer.Name).FirstAsync();
                     _gameServer.OnlineCount = 0;
                     await uow.CommitAsync();
                 }
@@ -46,7 +46,7 @@ namespace FTServer.Game.Core.Services
             await _semaphore.WaitAsync();
             try
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                 {
                     uow.Attach(_gameServer);
                     _gameServer.OnlineCount += 1;
@@ -64,7 +64,7 @@ namespace FTServer.Game.Core.Services
             await _semaphore.WaitAsync();
             try
             {
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                 {
                     uow.Attach(_gameServer);
                     _gameServer.OnlineCount -= 1;

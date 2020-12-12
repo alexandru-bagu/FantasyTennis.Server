@@ -49,7 +49,7 @@ namespace FTServer.Authentication.Core.Network
                     }
                 });
                 List<Character> characterList = new List<Character>();
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                     characterList = uow.Characters.Where(p => p.AccountId == context.Account.Id).ToList();
                 await context.SendAsync(new CharacterListMessage()
                 {
@@ -76,7 +76,7 @@ namespace FTServer.Authentication.Core.Network
                     _logger.LogInformation($"User login attempt: {request.Username} with password: {request.Password} with client version: {request.ClientLongVersion}");
                     try
                     {
-                        await using (var uow = await _unitOfWorkFactory.Create())
+                        await using (var uow = _unitOfWorkFactory.Create())
                         {
                             if (request.ClientLongVersion != ClientLongVersion)
                             {

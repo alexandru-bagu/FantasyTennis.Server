@@ -33,7 +33,7 @@ namespace FTServer.Authentication.Core.Network
             if (message is CreateCharacterRequest msg)
             {
                 int count = 0;
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                 {
                     count = await uow.Characters.Where(p => p.Name == msg.Name).CountAsync();
                     if (count == 1)

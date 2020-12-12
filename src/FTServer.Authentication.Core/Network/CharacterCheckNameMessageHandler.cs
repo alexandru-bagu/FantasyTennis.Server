@@ -24,7 +24,7 @@ namespace FTServer.Authentication.Core.Network
             if (message is CheckCharacterNameRequest checkName)
             {
                 int count = 0;
-                await using (var uow = await _unitOfWorkFactory.Create())
+                await using (var uow = _unitOfWorkFactory.Create())
                     count = await uow.Characters.Where(p => p.Name == checkName.Name).CountAsync();
                 await context.SendAsync(new CheckCharacterNameResponse() { Failure = count != 0 });
             }

@@ -11,17 +11,13 @@ namespace FTServer.Network.Message
     public class ServerListResponse : NetworkMessage
     {
         public const ushort MessageId = 0x1010;
-        private readonly IEnumerable<GameServer> _gameServers;
 
         public override int MaximumSize => 4096;
 
+        public IEnumerable<GameServer> GameServers { get; set; }
+
         public ServerListResponse() : base(MessageId)
         {
-        }
-
-        public ServerListResponse(IEnumerable<GameServer> gameServers) : this()
-        {
-            _gameServers = gameServers;
         }
 
         public override void Deserialize(IUnmanagedMemoryReader reader)
@@ -32,9 +28,9 @@ namespace FTServer.Network.Message
         public override void Serialize(IUnmanagedMemoryWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte((byte)_gameServers.Count());
+            writer.WriteByte((byte)GameServers.Count());
 
-            foreach(var server in _gameServers)
+            foreach(var server in GameServers)
             {
                 writer.WriteByte(server.UnknownByte);
                 writer.WriteInt16(server.Id);

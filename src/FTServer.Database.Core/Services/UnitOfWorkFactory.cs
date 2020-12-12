@@ -1,7 +1,6 @@
 ﻿using FTServer.Contracts.Database;
 using FTServer.Contracts.Services.Database;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace FTServer.Database.Core.Services
 {
@@ -14,11 +13,11 @@ namespace FTServer.Database.Core.Services
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        public Task<IUnitOfWork> Create()
+        public IUnitOfWork Create()
         {
             var scope = _serviceScopeFactory.CreateScope();
             IUnitOfWork uow = scope.ServiceProvider.Create<UnitOfWork>(scope);
-            return Task.FromResult(uow);
+            return uow;
         }
     }
 }
