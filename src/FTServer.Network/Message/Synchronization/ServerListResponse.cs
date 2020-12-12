@@ -37,7 +37,7 @@ namespace FTServer.Network.Message
             foreach(var server in _gameServers)
             {
                 writer.WriteByte(server.UnknownByte);
-                writer.WriteUInt16(server.Id);
+                writer.WriteInt16(server.Id);
                 writer.WriteByte((byte)server.Type);
                 writer.WriteString(server.Host, Encoding.Unicode, 256);
                 writer.WriteUInt16(server.Port);

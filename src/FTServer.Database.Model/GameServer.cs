@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FTServer.Database.Model
 {
-    public class GameServer : DbEntity<ushort>
+    public class GameServer : DbEntity<short>
     {
         public string Name { get; set; }
         public bool Enabled { get; set; }

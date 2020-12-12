@@ -16,6 +16,8 @@ namespace FTServer.Contracts.Database
         DbSet<Furniture> Furniture { get; }
         DbSet<GameServer> GameServers { get; }
         DbSet<RelayServer> RelayServers { get; }
+        DbSet<Friendship> Friendships { get; }
+
         void Attach<T>(T entity);
         void Detach<T>(T entity);
     }

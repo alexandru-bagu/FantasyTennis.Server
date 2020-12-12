@@ -16,7 +16,7 @@ namespace FTServer.Network.Message.Synchronization
             Home = 1,
             Inventory = 2,
             Unknown = 3,
-            Unknown2 = 4
+            CoupleSystem = 4
         }
 
         public SynchronizationType Type { get; set; }

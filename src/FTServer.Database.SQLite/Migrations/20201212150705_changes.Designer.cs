@@ -3,14 +3,16 @@ using System;
 using FTServer.Database.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FTServer.Database.SQLite.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    partial class SQLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201212150705_changes")]
+    partial class changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,9 +22,6 @@ namespace FTServer.Database.SQLite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<short?>("ActiveServerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Ap")
@@ -53,8 +52,6 @@ namespace FTServer.Database.SQLite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActiveServerId");
 
                     b.ToTable("Accounts");
                 });
@@ -181,33 +178,6 @@ namespace FTServer.Database.SQLite.Migrations
                     b.ToTable("DataSeeds");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Model.Friendship", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreationTimestamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DeletionTimestamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("HeroOneId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HeroTwoId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HeroOneId");
-
-                    b.HasIndex("HeroTwoId");
-
-                    b.ToTable("Friendships");
-                });
-
             modelBuilder.Entity("FTServer.Database.Model.Furniture", b =>
                 {
                     b.Property<int>("Id")
@@ -247,7 +217,7 @@ namespace FTServer.Database.SQLite.Migrations
 
             modelBuilder.Entity("FTServer.Database.Model.GameServer", b =>
                 {
-                    b.Property<short>("Id")
+                    b.Property<ushort>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -428,7 +398,7 @@ namespace FTServer.Database.SQLite.Migrations
 
             modelBuilder.Entity("FTServer.Database.Model.RelayServer", b =>
                 {
-                    b.Property<short>("Id")
+                    b.Property<ushort>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -461,15 +431,6 @@ namespace FTServer.Database.SQLite.Migrations
                     b.ToTable("RelayServers");
                 });
 
-            modelBuilder.Entity("FTServer.Database.Model.Account", b =>
-                {
-                    b.HasOne("FTServer.Database.Model.GameServer", "ActiveServer")
-                        .WithMany()
-                        .HasForeignKey("ActiveServerId");
-
-                    b.Navigation("ActiveServer");
-                });
-
             modelBuilder.Entity("FTServer.Database.Model.Character", b =>
                 {
                     b.HasOne("FTServer.Database.Model.Account", "Account")
@@ -479,25 +440,6 @@ namespace FTServer.Database.SQLite.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("FTServer.Database.Model.Friendship", b =>
-                {
-                    b.HasOne("FTServer.Database.Model.Character", "HeroOne")
-                        .WithMany()
-                        .HasForeignKey("HeroOneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FTServer.Database.Model.Character", "HeroTwo")
-                        .WithMany()
-                        .HasForeignKey("HeroTwoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HeroOne");
-
-                    b.Navigation("HeroTwo");
                 });
 
             modelBuilder.Entity("FTServer.Database.Model.Furniture", b =>

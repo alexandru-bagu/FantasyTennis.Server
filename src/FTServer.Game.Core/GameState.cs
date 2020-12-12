@@ -8,7 +8,7 @@
         SynchronizeHome,
         SynchronizeInventory,
         SynchronizeUnknown1,
-        SynchronizeUnknown2,
+        SynchronizeCoupleSystem,
         Online
     }
 }

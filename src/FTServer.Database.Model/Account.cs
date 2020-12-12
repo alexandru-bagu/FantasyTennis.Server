@@ -14,6 +14,7 @@ namespace FTServer.Database.Model
         public int Ap { get; set; }
         public bool Enabled { get; set; }
         public bool Online { get; set; }
+        public short? ActiveServerId { get; set; }
         public SecurityLevel SecurityLevel { get; set; }
         public int LastCharacterId { get; set; }
 
@@ -22,5 +23,6 @@ namespace FTServer.Database.Model
 
         public HashSet<Login> Logins { get; set; }
         public HashSet<Character> Characters { get; set; }
+        [ForeignKey(nameof(ActiveServerId))] public GameServer ActiveServer { get; set; }
     }
 }

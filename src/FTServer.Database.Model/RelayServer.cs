@@ -2,7 +2,7 @@
 
 namespace FTServer.Database.Model
 {
-    public class RelayServer : DbEntity<ushort>
+    public class RelayServer : DbEntity<short>
     {
         public string Name { get; set; }
         public bool Enabled { get; set; }

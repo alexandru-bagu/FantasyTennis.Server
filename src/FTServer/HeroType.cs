@@ -41,6 +41,7 @@ namespace FTServer
         }
 
         public static implicit operator int(HeroType type) { return type._value; }
+        public static implicit operator byte(HeroType type) { return (byte)type._value; }
         public static implicit operator HeroType(int value)
         {
             if (Niki._value == value) return Niki;

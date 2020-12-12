@@ -3,14 +3,16 @@ using System;
 using FTServer.Database.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FTServer.Database.SQLite.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    partial class SQLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201212161855_initial friends changes")]
+    partial class initialfriendschanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +24,7 @@ namespace FTServer.Database.SQLite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<short?>("ActiveServerId")
+                    b.Property<short>("ActiveServerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Ap")
@@ -465,7 +467,9 @@ namespace FTServer.Database.SQLite.Migrations
                 {
                     b.HasOne("FTServer.Database.Model.GameServer", "ActiveServer")
                         .WithMany()
-                        .HasForeignKey("ActiveServerId");
+                        .HasForeignKey("ActiveServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ActiveServer");
                 });

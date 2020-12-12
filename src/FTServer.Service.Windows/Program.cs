@@ -53,9 +53,9 @@ namespace FTServer.Service.Windows
                 .UseSerilog()
                 //.UseMySqlDatabase()
                 .UseSQLiteDatabase()
-                //.UseAuthenticationServer()
+                .UseAuthenticationServer()
                 .UseGameServer()
-                //.UseRelayServer()
+                .UseRelayServer()
                 .UseWindowsService();
     }
 }

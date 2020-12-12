@@ -1,7 +1,9 @@
 ﻿using FTServer.Database.Model;
+using FTServer.Dto;
 using FTServer.Network;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FTServer.Game.Core
@@ -18,6 +20,7 @@ namespace FTServer.Game.Core
         }
 
         public Character Character { get; set; }
+        public List<FriendDto> Friends { get; set; }
 
         protected override async Task Connected()
         {
@@ -43,7 +46,7 @@ namespace FTServer.Game.Core
         }
         public async Task<bool> FaultyMinimumState(GameState minimum)
         {
-            if (State <= minimum)
+            if (State < minimum)
             {
                 Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. Expected {minimum}+ but found {State}");
                 Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");

@@ -26,6 +26,7 @@ namespace FTServer.Database.Core
         public DbSet<Furniture> Furniture => _databaseContext.Furniture;
         public DbSet<GameServer> GameServers => _databaseContext.GameServers;
         public DbSet<RelayServer> RelayServers => _databaseContext.RelayServers;
+        public DbSet<Friendship> Friendships => _databaseContext.Friendships;
 
         private IDbContextTransaction _transaction;
 

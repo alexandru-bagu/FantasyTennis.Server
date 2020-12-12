@@ -18,7 +18,7 @@ namespace FTServer.Game.Core.Network
 
         public async Task Process(INetworkMessage message, GameNetworkContext context)
         {
-            if (await context.FaultyMinimumState(GameState.Authenticate)) return;
+            if (await context.FaultyMinimumState(GameState.SynchronizeExperience)) return;
             if (message is CharacterSynchronizationRequest request)
             {
                 switch (request.Type)
@@ -38,10 +38,10 @@ namespace FTServer.Game.Core.Network
                         break;
                     case CharacterSynchronizationRequest.SynchronizationType.Unknown:
                         if (await context.FaultyState(GameState.SynchronizeUnknown1)) return;
-                        context.State = GameState.SynchronizeUnknown2;
+                        context.State = GameState.SynchronizeCoupleSystem;
                         break;
-                    case CharacterSynchronizationRequest.SynchronizationType.Unknown2:
-                        if (await context.FaultyState(GameState.SynchronizeUnknown2)) return;
+                    case CharacterSynchronizationRequest.SynchronizationType.CoupleSystem:
+                        if (await context.FaultyState(GameState.SynchronizeCoupleSystem)) return;
                         context.State = GameState.Online;
                         break;
                 }
