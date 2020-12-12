@@ -29,7 +29,7 @@ namespace FTServer
             throw new Exception($"Unknown value for QuestGameType: {value}");
         }
 
-        public static implicit operator int(QuestGameType shopPriceType) { return shopPriceType._value; }
+        public static implicit operator int(QuestGameType type) { return type._value; }
         public static implicit operator QuestGameType(int value)
         {
             if (Tutorial._value == value) return Tutorial;

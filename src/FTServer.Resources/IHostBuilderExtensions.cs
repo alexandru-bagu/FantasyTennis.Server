@@ -19,7 +19,7 @@ public static class IHostBuilderExtensions
         return hostBuilder
             .ConfigureAppConfiguration((context, builder) =>
             {
-                if(File.Exists("settings.resources.json"))
+                if (File.Exists("settings.resources.json"))
                     builder.AddJsonFile("settings.resources.json");
             })
             .ConfigureServices((context, services) =>
@@ -32,7 +32,9 @@ public static class IHostBuilderExtensions
                 services.AddSingleton<IPetLevelDataStore, PetLevelDataStore>();
                 services.AddSingleton<IItemPartDataStore, ItemPartDataStore>();
                 services.AddSingleton<IShopItemDataStore, ShopItemDataStore>();
-                services.AddSingleton<IQuestDataStore, QuestDataStore>();
+                services.AddSingleton<IMapQuestDataStore, MapQuestDataStore>();
+                services.AddSingleton<IEmblemQuestDataStore, EmblemQuestDataStore>();
+                services.AddSingleton<ITextDataStore, TextDataStore>();
             });
     }
 }

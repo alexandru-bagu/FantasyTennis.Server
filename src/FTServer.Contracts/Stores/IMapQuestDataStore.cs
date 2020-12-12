@@ -1,9 +1,9 @@
-﻿using FTServer.Resources.Quest;
+﻿using FTServer.Resources.MapQuest;
 using System.Collections.Generic;
 
 namespace FTServer.Contracts.Stores
 {
-    public interface IQuestDataStore
+    public interface IMapQuestDataStore
     {
         IReadOnlyCollection<Global> Global { get; }
         IReadOnlyDictionary<int, Tutorial> Tutorials { get; }

@@ -103,7 +103,8 @@ namespace FTServer.Resources.Services
         {
             using (var resource = GetResource(path))
             using (var reader = new StreamReader(resource.Stream))
-                return reader.ReadToEnd().Trim('\0');
+                return reader.ReadToEnd()
+                    .TrimEnd('\0');
         }
     }
 }

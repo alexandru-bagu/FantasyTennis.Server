@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FTServer.Resources.Quest
+namespace FTServer.Resources.MapQuest
 {
     public class Global
     {

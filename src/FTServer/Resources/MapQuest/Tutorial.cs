@@ -1,4 +1,4 @@
-﻿namespace FTServer.Resources.Quest
+﻿namespace FTServer.Resources.MapQuest
 {
     public class Tutorial
     {

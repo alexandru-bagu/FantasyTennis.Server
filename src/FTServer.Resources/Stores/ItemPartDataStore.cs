@@ -13,19 +13,19 @@ namespace FTServer.Resources.Stores.Pet
         {
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
-            foreach (dynamic item in resource.ItemList)
+            foreach (dynamic itemRes in resource.ItemList)
             {
                 var itemPart = new ItemPart();
-                itemPart.Index = item.Index;
-                itemPart.Name = item.Nameen;
+                itemPart.Index = itemRes.Index;
+                itemPart.Name = itemRes.Nameen;
                 itemPart.Name = itemPart.Name.Trim();
-                itemPart.Hero = HeroType.Parse(item.Char);
-                itemPart.Type = ItemPartType.Parse(item.Part);
-                itemPart.Mesh = item.Mesh;
-                itemPart.Hair = item.Hair;
-                itemPart.Leg = item.Leg;
-                itemPart.Foot = item.Foot;
-                itemPart.EnchantElement = item.EnchantElement;
+                itemPart.Hero = HeroType.Parse(itemRes.Char);
+                itemPart.Type = ItemPartType.Parse(itemRes.Part);
+                itemPart.Mesh = itemRes.Mesh;
+                itemPart.Hair = itemRes.Hair;
+                itemPart.Leg = itemRes.Leg;
+                itemPart.Foot = itemRes.Foot;
+                itemPart.EnchantElement = itemRes.EnchantElement;
                 Add(itemPart.Index, itemPart);
             }
         }

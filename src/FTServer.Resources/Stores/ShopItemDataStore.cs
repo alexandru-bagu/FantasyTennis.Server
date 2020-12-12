@@ -13,45 +13,45 @@ namespace FTServer.Resources.Stores.Pet
         {
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
-            foreach (dynamic item in resource.ProductList)
+            foreach (dynamic itemRes in resource.ProductList)
             {
                 var shopItem = new ShopItem();
-                shopItem.Display = item.DISPLAY;
-                shopItem.Index = item.Index;
-                shopItem.Enable = item.Enable == 1;
-                shopItem.Free = item.Free == 1;
-                shopItem.Sale = item.Sale == 1;
-                shopItem.Event = item.Event == 1;
-                shopItem.Couple = item.Couple == 1;
-                shopItem.Nobuy = item.Nobuy == 1;
-                shopItem.Rand = item.Rand != "No";
-                shopItem.UseType = ShopItemUseType.Parse(item.UseType);
-                shopItem.Use0 = item.Use0;
-                shopItem.Use1 = item.Use1;
-                shopItem.Use2 = item.Use2;
-                shopItem.PriceType = ShopPriceType.Parse(item.PriceType);
-                shopItem.Price0 = item.Price0;
-                shopItem.Price1 = item.Price1;
-                shopItem.Price2 = item.Price2;
-                shopItem.OldPrice0 = item.OldPrice0;
-                shopItem.OldPrice1 = item.OldPrice1;
-                shopItem.OldPrice2 = item.OldPrice2;
-                shopItem.CouplePrice = item.CouplePrice;
-                shopItem.CategoryType = ShopCategoryType.Parse(item.Category);
-                shopItem.Name = item.Name;
-                shopItem.GoldBack = item.GoldBack == 1;
-                shopItem.EnableParcel = item.EnableParcel == 1;
-                shopItem.HeroType = (int)item.Char;
-                shopItem.Item0 = item.Item0;
-                shopItem.Item1 = item.Item1;
-                shopItem.Item2 = item.Item2;
-                shopItem.Item3 = item.Item3;
-                shopItem.Item4 = item.Item4;
-                shopItem.Item5 = item.Item5;
-                shopItem.Item6 = item.Item6;
-                shopItem.Item7 = item.Item7;
-                shopItem.Item8 = item.Item8;
-                shopItem.Item9 = item.Item9;
+                shopItem.Display = itemRes.DISPLAY;
+                shopItem.Index = itemRes.Index;
+                shopItem.Enable = itemRes.Enable == 1;
+                shopItem.Free = itemRes.Free == 1;
+                shopItem.Sale = itemRes.Sale == 1;
+                shopItem.Event = itemRes.Event == 1;
+                shopItem.Couple = itemRes.Couple == 1;
+                shopItem.Nobuy = itemRes.Nobuy == 1;
+                shopItem.Rand = itemRes.Rand != "No";
+                shopItem.UseType = ShopItemUseType.Parse(itemRes.UseType);
+                shopItem.Use0 = itemRes.Use0;
+                shopItem.Use1 = itemRes.Use1;
+                shopItem.Use2 = itemRes.Use2;
+                shopItem.PriceType = ShopPriceType.Parse(itemRes.PriceType);
+                shopItem.Price0 = itemRes.Price0;
+                shopItem.Price1 = itemRes.Price1;
+                shopItem.Price2 = itemRes.Price2;
+                shopItem.OldPrice0 = itemRes.OldPrice0;
+                shopItem.OldPrice1 = itemRes.OldPrice1;
+                shopItem.OldPrice2 = itemRes.OldPrice2;
+                shopItem.CouplePrice = itemRes.CouplePrice;
+                shopItem.CategoryType = ShopCategoryType.Parse(itemRes.Category);
+                shopItem.Name = itemRes.Name;
+                shopItem.GoldBack = itemRes.GoldBack == 1;
+                shopItem.EnableParcel = itemRes.EnableParcel == 1;
+                shopItem.Hero = (int)itemRes.Char;
+                shopItem.Item0 = itemRes.Item0;
+                shopItem.Item1 = itemRes.Item1;
+                shopItem.Item2 = itemRes.Item2;
+                shopItem.Item3 = itemRes.Item3;
+                shopItem.Item4 = itemRes.Item4;
+                shopItem.Item5 = itemRes.Item5;
+                shopItem.Item6 = itemRes.Item6;
+                shopItem.Item7 = itemRes.Item7;
+                shopItem.Item8 = itemRes.Item8;
+                shopItem.Item9 = itemRes.Item9;
                 Add(shopItem.Index, shopItem);
             }
         }

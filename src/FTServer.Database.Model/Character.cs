@@ -15,7 +15,7 @@ namespace FTServer.Database.Model
         public int Experience { get; set; }
         public bool Enabled { get; set; }
         public int Gold { get; set; }
-        public HeroType Type { get; set; }
+        public int Type { get; set; }
 
         public byte Strength { get; set; }
         public byte Stamina { get; set; }

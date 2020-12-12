@@ -35,7 +35,7 @@ namespace FTServer
             throw new Exception($"Unknown value for ShopItemUseType: {value}");
         }
 
-        public static implicit operator int(ShopItemUseType shopPriceType) { return shopPriceType._value; }
+        public static implicit operator int(ShopItemUseType type) { return type._value; }
         public static implicit operator ShopItemUseType(int value)
         {
             if (NotAvailable._value == value) return NotAvailable;

@@ -7,6 +7,8 @@ Res\Script\PubETC\Ini3\MapQuest.xml
 -- items
 Res\Script\Item\Item_Parts.xml
 
+-- emblem
+Res\Script\ETC\EmblemQuest.xml
 
 -------------- later ---------------
 Res\Script\Item\Item_Tools.xml
@@ -120,7 +122,7 @@ Res\Script\PubLottery\Ini3\Ini3_Lot_93.xml
 Res\Script\PubLottery\Ini3\Ini3_Lot_94.xml
 Res\Script\PubLottery\Ini3\Ini3_Lot_95.xml
 
--- lottery
+-- lottery (?)
 Res\Script\PubItem\Ini3\Ini3_Lot_31.xml
 Res\Script\PubItem\Ini3\Ini3_Lot_32.xml
 Res\Script\PubItem\Ini3\Ini3_Lot_33.xml

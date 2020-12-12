@@ -3,7 +3,6 @@ using FTServer.Database.Model;
 using FTServer.Game.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

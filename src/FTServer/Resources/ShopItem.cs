@@ -27,7 +27,7 @@
         public string Name { get; set; }
         public bool GoldBack { get; set; }
         public bool EnableParcel { get; set; }
-        public HeroType HeroType { get; set; }
+        public HeroType Hero { get; set; }
         public int Item0 { get; set; }
         public int Item1 { get; set; }
         public int Item2 { get; set; }
