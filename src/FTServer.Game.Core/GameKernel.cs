@@ -6,8 +6,10 @@ using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
 using FTServer.Database.Model;
 using FTServer.Game.Core.Network;
+using FTServer.Game.Core.Services;
 using FTServer.Game.Core.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,25 +19,19 @@ namespace FTServer.Game.Core
     public class GameKernel : BackgroundService
     {
         private readonly ILogger<GameKernel> _logger;
-        private readonly INetworkServiceFactory _networkServiceFactory;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-        private readonly IConcurrentUserTrackingService _concurrentUserTrackingService;
         private readonly AppSettings _appSettings;
-        private INetworkService<GameNetworkContext> _gameNetworkService;
 
-        public GameKernel(ILogger<GameKernel> logger, IServiceProvider serviceProvider,
-            INetworkServiceFactory networkServiceFactory,
+        public GameKernel(ILogger<GameKernel> logger,
+            IServiceScopeFactory serviceScopeFactory, 
             IOptions<AppSettings> appSettings,
-            INetworkMessageHandlerService<GameNetworkContext> networkMessageHandlerService,
-            IUnitOfWorkFactory unitOfWorkFactory,
-            IConcurrentUserTrackingService concurrentUserTrackingService)
+            IUnitOfWorkFactory unitOfWorkFactory)
         {
             _logger = logger;
-            _networkServiceFactory = networkServiceFactory;
+            _serviceScopeFactory = serviceScopeFactory;
             _unitOfWorkFactory = unitOfWorkFactory;
-            _concurrentUserTrackingService = concurrentUserTrackingService;
             _appSettings = appSettings.Value;
-            networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,17 +40,29 @@ namespace FTServer.Game.Core
             {
                 if (await IsServerEnabled())
                 {
-                    await _concurrentUserTrackingService.Reset();
-                    using (_gameNetworkService = _networkServiceFactory.Create<GameNetworkContext>(_appSettings.GameServer.Network.Host, _appSettings.GameServer.Network.Port))
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        await _gameNetworkService.ListenAsync();
+                        var networkMessageHandlerService = scope.ServiceProvider.GetService<INetworkMessageHandlerService<GameNetworkContext>>();
+                        networkMessageHandlerService.RegisterDefaultHandler(scope.ServiceProvider.Create<DefaultNetworkMessageHandler>());
+                        var networkServiceFactory = scope.ServiceProvider.GetService<INetworkServiceFactory>();
+                        
+                        var currentServer = scope.ServiceProvider.GetService<CurrentServer>();
+                        await currentServer.Initialize();
 
-                        _logger.LogInformation("Game server started.");
+                        var trackingService = scope.ServiceProvider.GetService<IConcurrentUserTrackingService>();
+                        await trackingService.Reset();
 
-                        while (!stoppingToken.IsCancellationRequested)
+                        using (var networkService = networkServiceFactory.Create<GameNetworkContext>(_appSettings.GameServer.Network.Host, _appSettings.GameServer.Network.Port))
                         {
-                            await Heartbeat();
-                            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                            await networkService.ListenAsync();
+
+                            _logger.LogInformation("Game server started.");
+
+                            while (!stoppingToken.IsCancellationRequested)
+                            {
+                                await Heartbeat();
+                                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                            }
                         }
                     }
                 }
@@ -68,7 +76,7 @@ namespace FTServer.Game.Core
         private async Task<bool> IsServerEnabled()
         {
             GameServer server = null;
-            await using (var uow =  _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 server = await uow.GameServers.Where(p => p.Name == _appSettings.GameServer.Name).FirstOrDefaultAsync();
                 if (server == null)
@@ -96,7 +104,7 @@ namespace FTServer.Game.Core
         private async Task<bool> Heartbeat()
         {
             GameServer server = null;
-            await using (var uow =  _unitOfWorkFactory.Create())
+            await using (var uow = _unitOfWorkFactory.Create())
             {
                 server = await uow.GameServers.Where(p => p.Name == _appSettings.GameServer.Name).FirstOrDefaultAsync();
                 if (server == null) return false;

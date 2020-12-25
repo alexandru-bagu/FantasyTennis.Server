@@ -8,6 +8,7 @@ using FTServer.Database.Model;
 using FTServer.Relay.Core.Network;
 using FTServer.Relay.Core.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,22 +18,19 @@ namespace FTServer.Relay.Core
     public class RelayKernel : BackgroundService
     {
         private readonly ILogger<RelayKernel> _logger;
-        private readonly INetworkServiceFactory _networkServiceFactory;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly AppSettings _appSettings;
-        private INetworkService<RelayNetworkContext> _relayNetworkService;
 
-        public RelayKernel(ILogger<RelayKernel> logger, IServiceProvider serviceProvider, 
-            INetworkServiceFactory networkServiceFactory, IOptions<AppSettings> appSettings, 
-            IUnitOfWorkFactory unitOfWorkFactory,
-            INetworkMessageHandlerService<RelayNetworkContext> networkMessageHandlerService)
+        public RelayKernel(ILogger<RelayKernel> logger, 
+            IServiceScopeFactory serviceScopeFactory,
+            IOptions<AppSettings> appSettings,
+            IUnitOfWorkFactory unitOfWorkFactory)
         {
             _logger = logger;
-            _networkServiceFactory = networkServiceFactory;
+            _serviceScopeFactory = serviceScopeFactory;
             _unitOfWorkFactory = unitOfWorkFactory;
             _appSettings = appSettings.Value;
-
-            networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,16 +39,23 @@ namespace FTServer.Relay.Core
             {
                 if (await IsServerEnabled())
                 {
-                    using (_relayNetworkService = _networkServiceFactory.Create<RelayNetworkContext>(_appSettings.RelayServer.Network.Host, _appSettings.RelayServer.Network.Port))
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        await _relayNetworkService.ListenAsync();
+                        var networkMessageHandlerService = scope.ServiceProvider.GetService<INetworkMessageHandlerService<RelayNetworkContext>>();
+                        networkMessageHandlerService.RegisterDefaultHandler(scope.ServiceProvider.Create<DefaultNetworkMessageHandler>());
+                        var networkServiceFactory = scope.ServiceProvider.GetService<INetworkServiceFactory>();
 
-                        _logger.LogInformation("Relay server started.");
-
-                        while (!stoppingToken.IsCancellationRequested)
+                        using (var networkService = networkServiceFactory.Create<RelayNetworkContext>(_appSettings.RelayServer.Network.Host, _appSettings.RelayServer.Network.Port))
                         {
-                            await Heartbeat();
-                            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                            await networkService.ListenAsync();
+
+                            _logger.LogInformation("Relay server started.");
+
+                            while (!stoppingToken.IsCancellationRequested)
+                            {
+                                await Heartbeat();
+                                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                            }
                         }
                     }
                 }

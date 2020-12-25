@@ -8,6 +8,7 @@ using FTServer.Contracts.Services.Database;
 using FTServer.Contracts.Services.Network;
 using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,48 +18,54 @@ namespace FTServer.Authentication.Core
     public class AuthenticationKernel : BackgroundService
     {
         private readonly ILogger<AuthenticationKernel> _logger;
-        private readonly INetworkServiceFactory _networkServiceFactory;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly AppSettings _appSettings;
-        private INetworkService<AuthenticationNetworkContext> _authenticationNetworkService;
-        
+
         public AuthenticationKernel(ILogger<AuthenticationKernel> logger,
-            IServiceProvider serviceProvider,
-            INetworkServiceFactory networkServiceFactory,
+            IServiceScopeFactory serviceScopeFactory,
             IOptions<AppSettings> appSettings,
-            INetworkMessageHandlerService<AuthenticationNetworkContext> networkMessageHandlerService,
             IUnitOfWorkFactory unitOfWorkFactory)
         {
             _logger = logger;
-            _networkServiceFactory = networkServiceFactory;
+            _serviceScopeFactory = serviceScopeFactory;
             _unitOfWorkFactory = unitOfWorkFactory;
             _appSettings = appSettings.Value;
-
-            networkMessageHandlerService.RegisterDefaultHandler(serviceProvider.Create<DefaultNetworkMessageHandler>());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                await using (var uow = _unitOfWorkFactory.Create())
+                await ResetOnlinePlayers();
+                using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    (await uow.Accounts.Where(p => p.Online).Select(p => new Account() { Id = p.Id, Online = p.Online }).ToListAsync())
-                        .ForEach(p => { uow.Attach(p); p.Online = false; });
-                    await uow.CommitAsync();
-                }
+                    var networkMessageHandlerService = scope.ServiceProvider.GetService<INetworkMessageHandlerService<AuthenticationNetworkContext>>();
+                    networkMessageHandlerService.RegisterDefaultHandler(scope.ServiceProvider.Create<DefaultNetworkMessageHandler>());
+                    var networkServiceFactory = scope.ServiceProvider.GetService<INetworkServiceFactory>();
 
-                using (_authenticationNetworkService = _networkServiceFactory.Create<AuthenticationNetworkContext>(_appSettings.AuthServer.Network.Host, _appSettings.AuthServer.Network.Port))
-                {
-                    await _authenticationNetworkService.ListenAsync();
+                    using (var networkService = networkServiceFactory.Create<AuthenticationNetworkContext>(_appSettings.AuthServer.Network.Host, _appSettings.AuthServer.Network.Port))
+                    {
+                        await networkService.ListenAsync();
 
-                    _logger.LogInformation("Authentication server started.");
-                    await Task.Delay(-1, stoppingToken);
+                        _logger.LogInformation("Authentication server started.");
+                        await Task.Delay(-1, stoppingToken);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Fatal: {ex.Message}");
+            }
+        }
+
+        private async Task ResetOnlinePlayers()
+        {
+            await using (var uow = _unitOfWorkFactory.Create())
+            {
+                (await uow.Accounts.Where(p => p.Online).Select(p => new Account() { Id = p.Id, Online = p.Online }).ToListAsync())
+                    .ForEach(p => { uow.Attach(p); p.Online = false; });
+                await uow.CommitAsync();
             }
         }
     }

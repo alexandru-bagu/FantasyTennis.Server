@@ -1,8 +1,10 @@
 ﻿using FTServer.Contracts.Services.Database;
 using FTServer.Database.Model;
 using FTServer.Game.Core.Settings;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FTServer.Game.Core.Services
 {
@@ -21,13 +23,12 @@ namespace FTServer.Game.Core.Services
             _gameServer = null;
             _unitOfWorkFactory = unitOfWorkFactory;
             _options = options.Value;
-            init();
         }
 
-        private void init()
+        public async Task Initialize()
         {
-            using (var uow = _unitOfWorkFactory.Create())
-                _gameServer = uow.GameServers.Where(p => p.Name == _options.GameServer.Name).First();
+            await using (var uow = _unitOfWorkFactory.Create())
+                _gameServer = await uow.GameServers.Where(p => p.Name == _options.GameServer.Name).FirstAsync();
         }
     }
 }

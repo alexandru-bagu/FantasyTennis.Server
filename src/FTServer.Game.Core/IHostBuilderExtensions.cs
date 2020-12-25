@@ -20,8 +20,11 @@ public static class IHostBuilderExtensions
             .ConfigureServices((context, services) =>
             {
                 services.Configure<AppSettings>(context.Configuration);
-                services.AddSingleton<IConcurrentUserTrackingService, ConcurrentUserTrackingService>();
-                services.AddSingleton<ICurrentServer, CurrentServer>();
+
+                services.AddScoped<CurrentServer>();
+                services.AddScoped<ICurrentServer>((svc) => svc.GetService<CurrentServer>());
+                services.AddScoped<IConcurrentUserTrackingService, ConcurrentUserTrackingService>();
+
                 services.AddHostedService<GameKernel>();
             });
     }

@@ -14,12 +14,10 @@ public static class IHostBuilderExtensions
              .UseSecurity()
              .ConfigureServices((context, services) =>
              {
-                 services.AddTransient<INetworkServiceFactory, NetworkServiceFactory>();
                  services.AddTransient<INetworkMessageFactory, NetworkMessageFactory>();
-             })
-             .ConfigureServices((context, services) =>
-             {
-                 services.AddSingleton<INetworkMessageHandlerService<TNetworkContext>, NetworkMessageHandlerService<TNetworkContext>>();
+
+                 services.AddScoped<INetworkServiceFactory, NetworkServiceFactory>();
+                 services.AddScoped<INetworkMessageHandlerService<TNetworkContext>, NetworkMessageHandlerService<TNetworkContext>>();
              });
     }
 }
