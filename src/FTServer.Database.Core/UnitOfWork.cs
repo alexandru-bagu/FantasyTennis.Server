@@ -27,6 +27,8 @@ namespace FTServer.Database.Core
         public DbSet<GameServer> GameServers => _databaseContext.GameServers;
         public DbSet<RelayServer> RelayServers => _databaseContext.RelayServers;
         public DbSet<Friendship> Friendships => _databaseContext.Friendships;
+        public DbSet<TutorialProgress> TutorialProgress => _databaseContext.TutorialProgress;
+        public DbSet<ChallengeProgress> ChallengeProgress => _databaseContext.ChallengeProgress;
 
         private IDbContextTransaction _transaction;
 

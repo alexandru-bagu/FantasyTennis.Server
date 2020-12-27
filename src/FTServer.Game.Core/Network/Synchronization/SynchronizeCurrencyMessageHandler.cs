@@ -1,6 +1,6 @@
 ﻿using FTServer.Contracts.Network;
 using FTServer.Network;
-using FTServer.Network.Message.Synchronization;
+using FTServer.Network.Message.Character;
 using System.Threading.Tasks;
 
 namespace FTServer.Game.Core.Network.Synchronization

@@ -25,7 +25,7 @@ namespace FTServer.Resources.Stores.Pet
                 shopItem.Couple = itemRes.Couple == 1;
                 shopItem.Nobuy = itemRes.Nobuy == 1;
                 shopItem.Rand = itemRes.Rand != "No";
-                shopItem.UseType = ShopItemUseType.Parse(itemRes.UseType);
+                shopItem.UseType = ItemUseType.Parse(itemRes.UseType);
                 shopItem.Use0 = itemRes.Use0;
                 shopItem.Use1 = itemRes.Use1;
                 shopItem.Use2 = itemRes.Use2;
@@ -37,7 +37,7 @@ namespace FTServer.Resources.Stores.Pet
                 shopItem.OldPrice1 = itemRes.OldPrice1;
                 shopItem.OldPrice2 = itemRes.OldPrice2;
                 shopItem.CouplePrice = itemRes.CouplePrice;
-                shopItem.CategoryType = ShopCategoryType.Parse(itemRes.Category);
+                shopItem.CategoryType = ItemCategoryType.Parse(itemRes.Category);
                 shopItem.Name = itemRes.Name;
                 shopItem.GoldBack = itemRes.GoldBack == 1;
                 shopItem.EnableParcel = itemRes.EnableParcel == 1;

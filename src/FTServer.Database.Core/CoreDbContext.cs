@@ -19,6 +19,8 @@ namespace FTServer.Database.Core
         public DbSet<GameServer> GameServers { get; set; }
         public DbSet<RelayServer> RelayServers { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<TutorialProgress> TutorialProgress { get; set; }
+        public DbSet<ChallengeProgress> ChallengeProgress { get; set; }
 
         DatabaseFacade IRawDbContext.Database => Database;
 

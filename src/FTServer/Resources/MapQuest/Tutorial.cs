@@ -2,7 +2,7 @@
 {
     public class Tutorial
     {
-        public int Index { get; set; }
+        public ushort Index { get; set; }
         public string Name { get; set; }
         public int RewardExperience { get; set; }
         public int RewardGold { get; set; }

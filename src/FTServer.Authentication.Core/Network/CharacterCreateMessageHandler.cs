@@ -1,6 +1,7 @@
 ﻿using FTServer.Contracts.Game;
 using FTServer.Contracts.Network;
 using FTServer.Contracts.Services.Database;
+using FTServer.Database.Model;
 using FTServer.Network;
 using FTServer.Network.Message.Character;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,12 @@ namespace FTServer.Authentication.Core.Network
                         character.Willpower = msg.Willpower;
                         character.StatusPoints = msg.StatusPoints;
                         character.IsCreated = true;
+
+                        var home = new Home();
+                        home.CharacterId = character.Id;
+                        home.Level = 1;
+                        uow.Homes.Add(home);
+
                         try
                         {
                             await uow.CommitAsync();

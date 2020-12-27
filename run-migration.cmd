@@ -1,0 +1,1 @@
+dotnet run --project "src\FTServer.Database.Migrator\FTServer.Database.Migrator.csproj"

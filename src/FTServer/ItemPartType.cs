@@ -5,16 +5,16 @@ namespace FTServer
     public class ItemPartType
     {
         public static ItemPartType Set { get; } = new ItemPartType(0, "Set");
-        public static ItemPartType Hat { get; } = new ItemPartType(1, "Hat");
-        public static ItemPartType Hair { get; } = new ItemPartType(2, "Hair");
-        public static ItemPartType Glasses { get; } = new ItemPartType(3, "Glasses");
-        public static ItemPartType Shirt { get; } = new ItemPartType(4, "Shirt");
-        public static ItemPartType Bag { get; } = new ItemPartType(5, "Bag");
+        public static ItemPartType Hair { get; } = new ItemPartType(1, "Hair");
+        public static ItemPartType Shirt { get; } = new ItemPartType(2, "Shirt");
+        public static ItemPartType Pants { get; } = new ItemPartType(3, "Pants");
+        public static ItemPartType Socks { get; } = new ItemPartType(4, "Socks");
+        public static ItemPartType Shoes { get; } = new ItemPartType(5, "Shoes");
         public static ItemPartType Gloves { get; } = new ItemPartType(6, "Glove");
         public static ItemPartType Racket { get; } = new ItemPartType(7, "Racket");
-        public static ItemPartType Pants { get; } = new ItemPartType(8, "Pants");
-        public static ItemPartType Socks { get; } = new ItemPartType(9, "Socks");
-        public static ItemPartType Shoes { get; } = new ItemPartType(10, "Shoes");
+        public static ItemPartType Glasses { get; } = new ItemPartType(7, "Glasses");
+        public static ItemPartType Bag { get; } = new ItemPartType(9, "Bag");
+        public static ItemPartType Hat { get; } = new ItemPartType(10, "Hat");
         public static ItemPartType Dye { get; } = new ItemPartType(11, "Dye");
 
         private int _value;
@@ -50,6 +50,8 @@ namespace FTServer
         }
 
         public static implicit operator int(ItemPartType type) { return type._value; }
+        public static implicit operator byte(ItemPartType type) { return (byte)type._value; }
+        public static implicit operator ItemPartType(byte value) { return (int)value; }
         public static implicit operator ItemPartType(int value)
         {
             if (Bag._value == value) return Bag;

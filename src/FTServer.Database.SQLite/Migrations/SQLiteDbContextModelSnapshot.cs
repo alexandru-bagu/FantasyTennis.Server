@@ -59,6 +59,37 @@ namespace FTServer.Database.SQLite.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("FTServer.Database.Model.ChallengeProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Completed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletionTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("ChallengeProgress");
+                });
+
             modelBuilder.Entity("FTServer.Database.Model.Character", b =>
                 {
                     b.Property<int>("Id")
@@ -66,9 +97,6 @@ namespace FTServer.Database.SQLite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BagId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreationTimestamp")
@@ -80,34 +108,13 @@ namespace FTServer.Database.SQLite.Migrations
                     b.Property<byte>("Dexterity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DressId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DyeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("Enabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Experience")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GlassesId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GlovesId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Gold")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HairId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HatId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsCreated")
@@ -126,18 +133,6 @@ namespace FTServer.Database.SQLite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("NameChangeByIcon")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PantsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RacketId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ShoesId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SocksId")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("Stamina")
@@ -326,6 +321,9 @@ namespace FTServer.Database.SQLite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte>("CategoryType")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CharacterId")
                         .HasColumnType("INTEGER");
 
@@ -335,10 +333,34 @@ namespace FTServer.Database.SQLite.Migrations
                     b.Property<DateTime?>("DeletionTimestamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ItemTypeId")
+                    b.Property<byte>("EnchantDexterity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("EnchantStamina")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("EnchantStrength")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("EnchantWillpower")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Equipped")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Index")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("Unknown1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("Unknown2")
                         .HasColumnType("INTEGER");
 
                     b.Property<byte>("UseType")
@@ -461,6 +483,37 @@ namespace FTServer.Database.SQLite.Migrations
                     b.ToTable("RelayServers");
                 });
 
+            modelBuilder.Entity("FTServer.Database.Model.TutorialProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Completed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletionTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ushort>("TutorialId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("TutorialProgress");
+                });
+
             modelBuilder.Entity("FTServer.Database.Model.Account", b =>
                 {
                     b.HasOne("FTServer.Database.Model.GameServer", "ActiveServer")
@@ -468,6 +521,17 @@ namespace FTServer.Database.SQLite.Migrations
                         .HasForeignKey("ActiveServerId");
 
                     b.Navigation("ActiveServer");
+                });
+
+            modelBuilder.Entity("FTServer.Database.Model.ChallengeProgress", b =>
+                {
+                    b.HasOne("FTServer.Database.Model.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
                 });
 
             modelBuilder.Entity("FTServer.Database.Model.Character", b =>
@@ -514,7 +578,7 @@ namespace FTServer.Database.SQLite.Migrations
             modelBuilder.Entity("FTServer.Database.Model.Home", b =>
                 {
                     b.HasOne("FTServer.Database.Model.Character", "Character")
-                        .WithMany("Homes")
+                        .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -525,7 +589,7 @@ namespace FTServer.Database.SQLite.Migrations
             modelBuilder.Entity("FTServer.Database.Model.Item", b =>
                 {
                     b.HasOne("FTServer.Database.Model.Character", "Character")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -555,18 +619,22 @@ namespace FTServer.Database.SQLite.Migrations
                     b.Navigation("Login");
                 });
 
+            modelBuilder.Entity("FTServer.Database.Model.TutorialProgress", b =>
+                {
+                    b.HasOne("FTServer.Database.Model.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+                });
+
             modelBuilder.Entity("FTServer.Database.Model.Account", b =>
                 {
                     b.Navigation("Characters");
 
                     b.Navigation("Logins");
-                });
-
-            modelBuilder.Entity("FTServer.Database.Model.Character", b =>
-                {
-                    b.Navigation("Homes");
-
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("FTServer.Database.Model.Home", b =>

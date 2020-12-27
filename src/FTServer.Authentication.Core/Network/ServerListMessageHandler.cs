@@ -2,7 +2,7 @@
 using FTServer.Contracts.Services.Database;
 using FTServer.Database.Model;
 using FTServer.Network;
-using FTServer.Network.Message;
+using FTServer.Network.Message.System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

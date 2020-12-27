@@ -1,0 +1,1 @@
+dotnet run --project "src\FTServer.Service.Windows\FTServer.Service.Windows.csproj"

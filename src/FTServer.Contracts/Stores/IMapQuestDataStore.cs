@@ -6,9 +6,8 @@ namespace FTServer.Contracts.Stores
     public interface IMapQuestDataStore
     {
         IReadOnlyCollection<Global> Global { get; }
-        IReadOnlyDictionary<int, Tutorial> Tutorials { get; }
-        IReadOnlyDictionary<int, Challenge> Challenges { get; }
-        IReadOnlyDictionary<int, GuardianChallenge> GuardianChallenges { get; }
+        IReadOnlyDictionary<ushort, Tutorial> Tutorials { get; }
+        IReadOnlyDictionary<ushort, TennisChallenge> Challenges { get; }
         IReadOnlyDictionary<int, MiniGame> MiniGames { get; }
         IReadOnlyDictionary<int, PlayerNpc> PlayerNpcs { get; }
         IReadOnlyDictionary<int, MonsterNpc> MonsterNpcs { get; }

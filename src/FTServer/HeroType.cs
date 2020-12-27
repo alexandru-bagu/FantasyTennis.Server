@@ -54,5 +54,26 @@ namespace FTServer
             if (All._value == value) return All;
             throw new Exception($"Unknown value for HeroType: {value}");
         }
+
+        public static bool operator ==(HeroType hero1, HeroType hero2)
+        {
+            return hero1 == All || hero2 == All || hero1 == hero2;
+        }
+
+        public static bool operator !=(HeroType hero1, HeroType hero2)
+        {
+            return !(hero1 == All || hero2 == All || hero1 == hero2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is HeroType hero) return hero == this;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _value;
+        }
     }
 }

@@ -20,6 +20,8 @@ namespace FTServer.Game.Core
         }
 
         public Character Character { get; set; }
+        public Home Home { get; set; }
+        public List<Item> Items { get; set; }
         public List<FriendDto> Friends { get; set; }
 
         protected override async Task Connected()
@@ -32,7 +34,7 @@ namespace FTServer.Game.Core
         {
             State = GameState.Offline;
             await _concurrentUserTrackingService.Decrement();
-            await using (var uow =  UnitOfWorkFactory.Create())
+            await using (var uow = UnitOfWorkFactory.Create())
             {
                 uow.Attach(Character.Account);
                 Character.Account.Online = false;
@@ -45,19 +47,38 @@ namespace FTServer.Game.Core
         {
             if (State != expected)
             {
-                Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. Expected {expected} but found {State}");
-                Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");
+                if (Logger.IsEnabled(LogLevel.Debug))
+                    Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. Expected {expected} but found {State}");
+                if (Logger.IsEnabled(LogLevel.Trace))
+                    Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");
                 await DisconnectAsync();
                 return true;
             }
             return false;
         }
+
         public async Task<bool> FaultyMinimumState(GameState minimum)
         {
             if (State < minimum)
             {
-                Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. Expected {minimum}+ but found {State}");
-                Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");
+                if (Logger.IsEnabled(LogLevel.Debug))
+                    Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. Expected {minimum}+ but found {State}");
+                if (Logger.IsEnabled(LogLevel.Trace))
+                    Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");
+                await DisconnectAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> FaultyState(bool assertion, string failure)
+        {
+            if (!assertion)
+            {
+                if (Logger.IsEnabled(LogLevel.Debug))
+                    Logger.LogDebug($"{Options.RemoteEndPoint} disconnected in wrong state. {failure}");
+                if (Logger.IsEnabled(LogLevel.Trace))
+                    Logger.LogTrace($"{Options.RemoteEndPoint} disconnected in wrong state.\n{Environment.StackTrace}");
                 await DisconnectAsync();
                 return true;
             }

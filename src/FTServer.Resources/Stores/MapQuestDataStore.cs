@@ -12,17 +12,15 @@ namespace FTServer.Resources.Stores
         private const string Resource = "Res/Script/PubETC/Ini3/MapQuest.xml";
 
         private List<Global> _globals;
-        private Dictionary<int, Tutorial> _tutorials;
-        private Dictionary<int, Challenge> _challenges;
-        private Dictionary<int, GuardianChallenge> _guardianChallenges;
+        private Dictionary<ushort, Tutorial> _tutorials;
+        private Dictionary<ushort, TennisChallenge> _challenges;
         private Dictionary<int, MiniGame> _miniGames;
         private Dictionary<int, PlayerNpc> _playerNpcs;
         private Dictionary<int, MonsterNpc> _monsterNpcs;
 
         public IReadOnlyCollection<Global> Global => _globals;
-        public IReadOnlyDictionary<int, Tutorial> Tutorials => _tutorials;
-        public IReadOnlyDictionary<int, Challenge> Challenges => _challenges;
-        public IReadOnlyDictionary<int, GuardianChallenge> GuardianChallenges => _guardianChallenges;
+        public IReadOnlyDictionary<ushort, Tutorial> Tutorials => _tutorials;
+        public IReadOnlyDictionary<ushort, TennisChallenge> Challenges => _challenges;
         public IReadOnlyDictionary<int, MiniGame> MiniGames => _miniGames;
         public IReadOnlyDictionary<int, PlayerNpc> PlayerNpcs => _playerNpcs;
         public IReadOnlyDictionary<int, MonsterNpc> MonsterNpcs => _monsterNpcs;
@@ -30,9 +28,8 @@ namespace FTServer.Resources.Stores
         public MapQuestDataStore(IResourceManager resourceManager)
         {
             _globals = new List<Global>();
-            _tutorials = new Dictionary<int, Tutorial>();
-            _challenges = new Dictionary<int, Challenge>();
-            _guardianChallenges = new Dictionary<int, GuardianChallenge>();
+            _tutorials = new Dictionary<ushort, Tutorial>();
+            _challenges = new Dictionary<ushort, TennisChallenge>();
             _miniGames = new Dictionary<int, MiniGame>();
             _playerNpcs = new Dictionary<int, PlayerNpc>();
             _monsterNpcs = new Dictionary<int, MonsterNpc>();
@@ -83,7 +80,7 @@ namespace FTServer.Resources.Stores
             {
                 var guardianChallenge = new GuardianChallenge();
                 loadGuardianChallenge(challengeRes, guardianChallenge);
-                _guardianChallenges.Add(guardianChallenge.Index, guardianChallenge);
+                _challenges.Add(guardianChallenge.Index, guardianChallenge);
             }
         }
 

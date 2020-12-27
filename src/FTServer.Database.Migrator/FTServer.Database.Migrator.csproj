@@ -32,6 +32,7 @@
     <ProjectReference Include="..\FTServer.Database.MySql\FTServer.Database.MySql.csproj" />
     <ProjectReference Include="..\FTServer.Database.Seed\FTServer.Database.Seed.csproj" />
     <ProjectReference Include="..\FTServer.Database.SQLite\FTServer.Database.SQLite.csproj" />
+    <ProjectReference Include="..\FTServer.Resources\FTServer.Resources.csproj" />
     <ProjectReference Include="..\FTServer.Security\FTServer.Security.csproj" />
   </ItemGroup>
 </Project>

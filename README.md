@@ -6,6 +6,13 @@ I am working on it in my spare time, after my full-time job so progress will be 
 
 ## Demo
 We are not there yet. Authentication is handled. You can login and create a character. Single player is not yet available.
+### Installation steps
+1. install dotnet 5.0 sdk
+2. start `run-migration.bat`
+3. copy Fantasy Tennis game contents to `%USERPROFILE%\ftserver\client` (so that FantasyTennis.exe is in the client folder)
+4. update `%USERPROFILE%\ftserver\client\ServerInfo.ini` to have `IP_1=127.0.0.1` (local: 127.0.0.1)
+### Start server
+1. start `run-server`
 
 ## Progress
 * Project architecture is complete (or atleast the skeleton)

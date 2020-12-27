@@ -1,10 +1,11 @@
-﻿using FTServer.Contracts.Network;
+﻿using FTServer.Contracts.Game;
+using FTServer.Contracts.Network;
 using FTServer.Contracts.Security;
 using FTServer.Contracts.Services.Database;
 using FTServer.Database.Model;
 using FTServer.Network;
 using FTServer.Network.Message.Authentication;
-using FTServer.Network.Message.Synchronization;
+using FTServer.Network.Message.Character;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -24,13 +25,19 @@ namespace FTServer.Authentication.Core.Network
         private readonly IAuthenticationSynchronizationContextService _authenticationSynchronizationContextService;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly ISecureHashProvider _secureHashProvider;
+        private readonly ICharacterEquipmentBuilder _characterEquipmentBuilder;
 
-        public AuthenticationMessageHandler(ILogger<AuthenticationMessageHandler> logger, IAuthenticationSynchronizationContextService authenticationSynchronizationContextService, IUnitOfWorkFactory unitOfWorkFactory, ISecureHashProvider secureHashProvider)
+        public AuthenticationMessageHandler(ILogger<AuthenticationMessageHandler> logger, 
+            IAuthenticationSynchronizationContextService authenticationSynchronizationContextService,
+            IUnitOfWorkFactory unitOfWorkFactory, 
+            ISecureHashProvider secureHashProvider,
+            ICharacterEquipmentBuilder characterEquipmentBuilder)
         {
             _logger = logger;
             _authenticationSynchronizationContextService = authenticationSynchronizationContextService;
             _unitOfWorkFactory = unitOfWorkFactory;
             _secureHashProvider = secureHashProvider;
+            _characterEquipmentBuilder = characterEquipmentBuilder;
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
@@ -49,11 +56,18 @@ namespace FTServer.Authentication.Core.Network
                     }
                 });
                 List<Character> characterList = new List<Character>();
+                List<Item> itemList = new List<Item>();
                 await using (var uow = _unitOfWorkFactory.Create())
-                    characterList = uow.Characters.Where(p => p.AccountId == context.Account.Id).ToList();
+                {
+                    characterList = await uow.Characters.Where(p => p.AccountId == context.Account.Id).ToListAsync();
+                    itemList = await uow.Items.Include(p => p.Character).Where(p => p.Character.AccountId == context.Account.Id && p.Equipped).ToListAsync();
+                }
+
                 await context.SendAsync(new CharacterListMessage()
                 {
                     Characters = characterList,
+                    Items = itemList,
+                    EquipmentBuilder = _characterEquipmentBuilder,
                     SelectedCharacterId = context.Account.LastCharacterId
                 });
                 context.State = AuthenticationState.Online;

@@ -1,7 +1,7 @@
 ﻿using FTServer.Contracts.Network;
 using FTServer.Contracts.Services.Database;
 using FTServer.Network;
-using FTServer.Network.Message.Synchronization;
+using FTServer.Network.Message.System;
 using System.Threading.Tasks;
 
 namespace FTServer.Authentication.Core.Network

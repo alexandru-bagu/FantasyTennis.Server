@@ -11,7 +11,7 @@
         public bool Couple { get; set; }
         public bool Nobuy { get; set; }
         public bool Rand { get; set; }
-        public ShopItemUseType UseType { get; set; }
+        public ItemUseType UseType { get; set; }
         public int Use0 { get; set; }
         public int Use1 { get; set; }
         public int Use2 { get; set; }
@@ -23,9 +23,9 @@
         public int OldPrice1 { get; set; }
         public int OldPrice2 { get; set; }
         public int CouplePrice { get; set; }
-        public ShopCategoryType CategoryType { get; set; }
+        public ItemCategoryType CategoryType { get; set; }
         public string Name { get; set; }
-        public bool GoldBack { get; set; }
+        public int GoldBack { get; set; }
         public bool EnableParcel { get; set; }
         public HeroType Hero { get; set; }
         public int Item0 { get; set; }

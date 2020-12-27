@@ -46,6 +46,7 @@ namespace FTServer.Database.Migrator
                 .UseSerilog()
                 .UseCore()
                 .UseSecurity()
+                .UseResources()
                 .UseSQLiteDatabase()
                 //.UseMySqlDatabase()
                 .UseDatabaseSeed()

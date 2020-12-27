@@ -40,7 +40,8 @@ namespace FTServer.Game.Core.Network
                 {
                     await using (var uow = _unitOfWorkFactory.Create())
                     {
-                        var character = await uow.Characters.Include(p => p.Account)
+                        var character = await uow.Characters
+                            .Include(p => p.Account)
                             .Where(p => p.Id == request.CharacterId && !p.Account.Online &&
                                 p.Account.Id == request.Data.AccountId && p.Account.Key1 == request.Data.Key1 && p.Account.Key2 == request.Data.Key2)
                             .FirstOrDefaultAsync();
@@ -52,6 +53,8 @@ namespace FTServer.Game.Core.Network
                         {
                             context.State = GameState.SynchronizeExperience;
                             context.Character = character;
+                            context.Home = await uow.Homes.Where(p => p.CharacterId == context.Character.Id).SingleAsync();
+                            context.Items = await uow.Items.Where(p => p.CharacterId == context.Character.Id).ToListAsync();
                             character.Account.Online = true;
                             character.Account.ActiveServerId = _currentServer.Id;
                             await uow.CommitAsync();
