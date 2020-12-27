@@ -23,7 +23,7 @@
         public int OldPrice1 { get; set; }
         public int OldPrice2 { get; set; }
         public int CouplePrice { get; set; }
-        public ItemCategoryType CategoryType { get; set; }
+        public ShopCategoryType CategoryType { get; set; }
         public string Name { get; set; }
         public int GoldBack { get; set; }
         public bool EnableParcel { get; set; }

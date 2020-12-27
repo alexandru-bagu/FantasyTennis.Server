@@ -10,9 +10,9 @@ namespace FTServer.Network.Message.Shop
 
         public override int MaximumSize => 8;
 
-        public ItemCategoryType Category { get; set; }
-        public ItemPartType Part { get; set; }
-        public HeroType Hero { get; set; }
+        public int Category { get; set; }
+        public int Part { get; set; }
+        public int Hero { get; set; }
 
         public ShopItemCountRequest() : base(MessageId)
         {
@@ -21,9 +21,9 @@ namespace FTServer.Network.Message.Shop
         public override void Deserialize(IUnmanagedMemoryReader reader)
         {
             base.Deserialize(reader);
-            Category = reader.ReadByte();
-            Part = reader.ReadByte();
-            Hero = reader.ReadByte();
+            Category = reader.ReadSByte();
+            Part = reader.ReadSByte();
+            Hero = reader.ReadSByte();
         }
 
         public override void Serialize(IUnmanagedMemoryWriter writer)

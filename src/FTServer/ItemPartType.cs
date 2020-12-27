@@ -5,7 +5,7 @@ namespace FTServer
     public class ItemPartType
     {
         public static ItemPartType Set { get; } = new ItemPartType(0, "Set");
-        public static ItemPartType Hair { get; } = new ItemPartType(1, "Hair");
+        public static ItemPartType Hat { get; } = new ItemPartType(1, "Hat");
         public static ItemPartType Shirt { get; } = new ItemPartType(2, "Shirt");
         public static ItemPartType Pants { get; } = new ItemPartType(3, "Pants");
         public static ItemPartType Socks { get; } = new ItemPartType(4, "Socks");
@@ -14,7 +14,7 @@ namespace FTServer
         public static ItemPartType Racket { get; } = new ItemPartType(7, "Racket");
         public static ItemPartType Glasses { get; } = new ItemPartType(7, "Glasses");
         public static ItemPartType Bag { get; } = new ItemPartType(9, "Bag");
-        public static ItemPartType Hat { get; } = new ItemPartType(10, "Hat");
+        public static ItemPartType Hair { get; } = new ItemPartType(10, "Hair");
         public static ItemPartType Dye { get; } = new ItemPartType(11, "Dye");
 
         private int _value;
@@ -54,6 +54,7 @@ namespace FTServer
         public static implicit operator ItemPartType(byte value) { return (int)value; }
         public static implicit operator ItemPartType(int value)
         {
+            if (Set._value == value) return Set;
             if (Bag._value == value) return Bag;
             if (Gloves._value == value) return Gloves;
             if (Shoes._value == value) return Shoes;

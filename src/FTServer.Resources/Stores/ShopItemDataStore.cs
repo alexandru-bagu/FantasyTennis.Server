@@ -2,17 +2,27 @@
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace FTServer.Resources.Stores.Pet
+namespace FTServer.Resources.Stores
 {
     public class ShopItemDataStore : Dictionary<int, ShopItem>, IShopItemDataStore
     {
         private const string Resource = "Res/Script/Shop/Ini3/Shop_Ini3.xml";
+        private readonly IItemPartDataStore _itemPartDataStore;
+        private readonly IItemHouseDecorationDataStore _houseDecorationDataStore;
+        private readonly IItemEnchantDataStore _enchantDataStore;
+        private readonly IItemRecipeDataStore _recipeDataStore;
 
-        public ShopItemDataStore(IResourceManager resourceManager)
+        public ShopItemDataStore(IResourceManager resourceManager,
+            IItemPartDataStore itemPartDataStore,
+            IItemHouseDecorationDataStore houseDecorationDataStore,
+            IItemEnchantDataStore enchantDataStore,
+            IItemRecipeDataStore recipeDataStore)
         {
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
+            var tmp = new Dictionary<int, ShopItem>();
             foreach (dynamic itemRes in resource.ProductList)
             {
                 var shopItem = new ShopItem();
@@ -37,9 +47,9 @@ namespace FTServer.Resources.Stores.Pet
                 shopItem.OldPrice1 = itemRes.OldPrice1;
                 shopItem.OldPrice2 = itemRes.OldPrice2;
                 shopItem.CouplePrice = itemRes.CouplePrice;
-                shopItem.CategoryType = ItemCategoryType.Parse(itemRes.Category);
+                shopItem.CategoryType = ShopCategoryType.Parse(itemRes.Category);
                 shopItem.Name = itemRes.Name;
-                shopItem.GoldBack = itemRes.GoldBack == 1;
+                shopItem.GoldBack = itemRes.GoldBack;
                 shopItem.EnableParcel = itemRes.EnableParcel == 1;
                 shopItem.Hero = (int)itemRes.Char;
                 shopItem.Item0 = itemRes.Item0;
@@ -52,8 +62,56 @@ namespace FTServer.Resources.Stores.Pet
                 shopItem.Item7 = itemRes.Item7;
                 shopItem.Item8 = itemRes.Item8;
                 shopItem.Item9 = itemRes.Item9;
-                Add(shopItem.Index, shopItem);
+                tmp.Add(shopItem.Index, shopItem);
             }
+
+            foreach (var kvp in tmp.OrderBy(p => p.Key))
+                Add(kvp.Key, kvp.Value);
+
+            _itemPartDataStore = itemPartDataStore;
+            _houseDecorationDataStore = houseDecorationDataStore;
+            _enchantDataStore = enchantDataStore;
+            _recipeDataStore = recipeDataStore;
+        }
+
+        public IEnumerable<ShopItem> Search(int categoryType, int partType, int heroType)
+        {
+            var list = Values.AsEnumerable();
+            list = list.Where(p => p.Enable && p.CategoryType == categoryType);
+            if (categoryType == ShopCategoryType.Parts)
+            {
+                if (partType == ItemPartType.Set)
+                {
+                    var set = _itemPartDataStore.ByHero(heroType);
+                    list = list.Where(p => p.Item0 > 0 && p.Item1 > 0 && set.Contains(p.Item1));
+                }
+                else
+                {
+                    var set = _itemPartDataStore.ByTypeAndHero(partType, heroType);
+                    list = list.Where(p => p.Item1 == 0 && set.Contains(p.Item0));
+                }
+                list = list.Where(p => p.Hero == heroType);
+            }
+            else if (categoryType == ShopCategoryType.HouseDecoration)
+            {
+                var set = _houseDecorationDataStore.ByKind(partType);
+                list = list.Where(p => set.Contains(p.Item0));
+            }
+            else if (categoryType == ShopCategoryType.Recipe)
+            {
+                var set = _recipeDataStore.ByKindAndHero(partType, heroType);
+                list = list.Where(p => set.Contains(p.Item0));
+            }
+            else if (categoryType == ShopCategoryType.Enchant)
+            {
+                var set = _enchantDataStore.ByKind(partType);
+                list = list.Where(p => set.Contains(p.Item0));
+            }
+            else if (categoryType == ShopCategoryType.Lottery)
+            {
+                list = list.Where(p => p.PriceType == partType);
+            }
+            return list;
         }
     }
 }

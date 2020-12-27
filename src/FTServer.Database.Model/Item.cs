@@ -7,7 +7,7 @@ namespace FTServer.Database.Model
     {
         public int Index { get; set; }
         public byte CategoryType { get; set; }
-        [NotMapped] public ItemCategoryType ItemCategoryType { get { return CategoryType; } set { CategoryType = value; } }
+        [NotMapped] public ShopCategoryType ItemCategoryType { get { return CategoryType; } set { CategoryType = value; } }
         public byte UseType { get; set; }
         [NotMapped] public ItemUseType ItemUseType { get { return UseType; } set { UseType = value; } }
         public bool Equipped { get; set; }

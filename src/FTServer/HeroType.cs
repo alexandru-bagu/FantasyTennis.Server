@@ -36,7 +36,7 @@ namespace FTServer
             if (value == "shua") return Shua;
             if (value == "pochi") return Pochi;
             if (value == "al") return Al;
-            if (value == "all") return All;
+            if (value == "all" || value == "all_char") return All;
             throw new Exception($"Unknown value for HeroType: {value}");
         }
 
@@ -57,12 +57,12 @@ namespace FTServer
 
         public static bool operator ==(HeroType hero1, HeroType hero2)
         {
-            return hero1 == All || hero2 == All || hero1 == hero2;
+            return hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value;
         }
 
         public static bool operator !=(HeroType hero1, HeroType hero2)
         {
-            return !(hero1 == All || hero2 == All || hero1 == hero2);
+            return !(hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value);
         }
 
         public override bool Equals(object obj)

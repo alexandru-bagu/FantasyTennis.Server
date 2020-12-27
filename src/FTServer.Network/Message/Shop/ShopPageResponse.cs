@@ -10,9 +10,9 @@ namespace FTServer.Network.Message.Shop
     {
         public const ushort MessageId = 0x2388;
 
-        public override int MaximumSize => 8;
+        public override int MaximumSize => 4096;
 
-        public int PageCount { get; set; }
+        public int Unknown { get; set; }
         
         public List<ShopItem> Items { get; set; }
 
@@ -28,13 +28,13 @@ namespace FTServer.Network.Message.Shop
         public override void Serialize(IUnmanagedMemoryWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt32(PageCount);
+            writer.WriteInt32(Unknown);
             writer.WriteUInt16((ushort)Items.Count);
 
             foreach(var item in Items)
             {
                 writer.WriteInt32(item.Index);
-                writer.WriteByte(item.PriceType);
+                writer.WriteByte((byte)(item.PriceType == ShopPriceType.Gold ? 0 : 1));
                 writer.WriteInt32(item.GoldBack);
                 writer.WriteInt32(item.Use0);
                 writer.WriteInt32(item.Use1);

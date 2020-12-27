@@ -8,12 +8,12 @@ namespace FTServer.Network.Message.Shop
     {
         public const ushort MessageId = 0x238A;
 
-        public override int MaximumSize => 8;
+        public override int MaximumSize => 16;
 
-        public ItemCategoryType Category { get; set; }
-        public ItemPartType Part { get; set; }
-        public HeroType Hero { get; set; }
-        public int Count { get; set; }
+        public int Category { get; set; }
+        public int Part { get; set; }
+        public int Hero { get; set; }
+        public int Pages { get; set; }
 
         public ShopItemCountResponse() : base(MessageId)
         {
@@ -27,10 +27,10 @@ namespace FTServer.Network.Message.Shop
         public override void Serialize(IUnmanagedMemoryWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(Category);
-            writer.WriteByte(Part);
-            writer.WriteByte(Hero);
-            writer.WriteInt32(Count);
+            writer.WriteSByte((sbyte)Category);
+            writer.WriteSByte((sbyte)Part);
+            writer.WriteSByte((sbyte)Hero);
+            writer.WriteInt32(Pages);
         }
     }
 }

@@ -35,6 +35,9 @@ public static class IHostBuilderExtensions
                 services.AddSingleton<IMapQuestDataStore, MapQuestDataStore>();
                 services.AddSingleton<IEmblemQuestDataStore, EmblemQuestDataStore>();
                 services.AddSingleton<ITextDataStore, TextDataStore>();
+                services.AddSingleton<IItemHouseDecorationDataStore, ItemHouseDecorationDataStore>();
+                services.AddSingleton<IItemEnchantDataStore, ItemEnchantDataStore>();
+                services.AddSingleton<IItemRecipeDataStore, ItemRecipeDataStore>();
             });
     }
 }

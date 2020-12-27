@@ -4,8 +4,9 @@ namespace FTServer
 {
     public class ShopPriceType
     {
-        public static ShopPriceType Gold { get; } = new ShopPriceType(0, "Gold");
-        public static ShopPriceType Mint { get; } = new ShopPriceType(1, "Mint");
+        public static ShopPriceType Mint { get; } = new ShopPriceType(0, "Mint");
+        public static ShopPriceType Gold { get; } = new ShopPriceType(1, "Gold");
+
 
         private int _value;
         private string _text;

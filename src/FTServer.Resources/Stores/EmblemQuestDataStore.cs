@@ -2,7 +2,6 @@
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores;
 using FTServer.Resources.EmblemQuest;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
