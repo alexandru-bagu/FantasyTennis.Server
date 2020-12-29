@@ -10,7 +10,7 @@ namespace FTServer.Network.Message.Shop
     {
         public const ushort MessageId = 0x2388;
 
-        public override int MaximumSize => 4096;
+        public override int MaximumSize => 396;
 
         public int Unknown { get; set; }
         

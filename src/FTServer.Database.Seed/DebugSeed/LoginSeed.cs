@@ -17,17 +17,17 @@ namespace FTServer.Database.Seed.DebugSeed
             _secureHashProvider = secureHashProvider;
         }
 
-        public async Task SeedAsync(IDbContext context)
+        public async Task SeedAsync(IUnitOfWork uow)
         {
 #if DEBUG
-            var account = await context.Accounts.FirstAsync();
+            var account = await uow.Accounts.FirstAsync();
             var login = new Login();
             login.AccountId = account.Id;
             login.Username = "test";
             login.Salt = _secureHashProvider.Random(64);
             login.Hash = _secureHashProvider.Hash("test" + login.Salt);
             login.Email = "test@test.test";
-            context.Logins.Add(login);
+            uow.Logins.Add(login);
 #endif
         }
     }

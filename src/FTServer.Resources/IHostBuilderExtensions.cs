@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using FTServer.Contracts.Stores;
 using System.IO;
 using FTServer.Resources.Stores;
+using FTServer.Resources.Stores.Item;
+using FTServer.Contracts.Stores.Item;
 
 public static class IHostBuilderExtensions
 {
@@ -38,6 +40,7 @@ public static class IHostBuilderExtensions
                 services.AddSingleton<IItemHouseDecorationDataStore, ItemHouseDecorationDataStore>();
                 services.AddSingleton<IItemEnchantDataStore, ItemEnchantDataStore>();
                 services.AddSingleton<IItemRecipeDataStore, ItemRecipeDataStore>();
+                services.AddSingleton<IItemToolDataStore, ItemToolDataStore>();
             });
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FTServer.Contracts.Game;
 using FTServer.Contracts.Stores;
+using FTServer.Contracts.Stores.Item;
 using FTServer.Database.Model;
 using FTServer.Resources;
 using System.Collections.Generic;

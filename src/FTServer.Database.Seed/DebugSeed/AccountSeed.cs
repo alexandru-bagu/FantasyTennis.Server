@@ -6,14 +6,14 @@ namespace FTServer.Database.Seed.DebugSeed
 {
     public class AccountSeed : IDataSeeder
     {
-        public Task SeedAsync(IDbContext context)
+        public Task SeedAsync(IUnitOfWork uow)
         {
 #if DEBUG
             var account = new Account();
             account.Ap = 100000;
             account.Enabled = true;
             account.SecurityLevel = SecurityLevel.GM;
-            context.Accounts.Add(account);
+            uow.Accounts.Add(account);
 #endif
             return Task.CompletedTask;
         }

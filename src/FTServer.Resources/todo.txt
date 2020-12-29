@@ -1,4 +1,5 @@
-﻿-- shop
+﻿================done==================
+-- shop
 Res\Script\Shop\Ini3\Shop_Ini3.xml
 
 -- challenges
@@ -6,15 +7,16 @@ Res\Script\PubETC\Ini3\MapQuest.xml
 
 -- items
 Res\Script\Item\Item_Parts.xml
+Res\Script\Item\Item_Enchant.xml
+Res\Script\Item\Item_HouseDeco.xml
+Res\Script\PubItem\Ini3\Item_Recipe_Ini3.xml
+Res\Script\Item\Item_Tools.xml
 
 -- emblem
 Res\Script\ETC\EmblemQuest.xml
 
--------------- later ---------------
-Res\Script\Item\Item_Tools.xml
-Res\Script\Item\Item_Enchant.xml
+===============later==================
 Res\Script\Item\Item_House.xml
-Res\Script\Item\Item_HouseDeco.xml
 Res\Script\Item\Item_PetChar.xml
 Res\Script\Item\Item_PetItem.xml
 Res\Script\Item\Item_Quick.xml
@@ -130,6 +132,5 @@ Res\Script\PubItem\Ini3\Item_Betting_Ini3.xml
 Res\Script\PubItem\Ini3\Item_EnchantLevel_Ini3.xml
 Res\Script\PubItem\Ini3\Item_Lottery_Ini3.xml
 Res\Script\PubItem\Ini3\Item_Parts_Ini3.xml
-Res\Script\PubItem\Ini3\Item_Recipe_Ini3.xml
 Res\Script\PubItem\Ini3\Item_Stat_Cards_Ini3.xml
 

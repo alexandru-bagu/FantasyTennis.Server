@@ -40,7 +40,6 @@ namespace FFTServer.Database.Seed.Services
                 _logger.LogInformation($"Begin {nameof(SeedAsync)}");
                 await using (var unitOfWork = _unitOfWorkFactory.Create())
                 {
-                    var dbContext = unitOfWork.DatabaseContext;
                     var baseType = typeof(IDataSeeder);
                     var seederTypes = new HashSet<Type>();
 
@@ -61,13 +60,13 @@ namespace FFTServer.Database.Seed.Services
                     {
                         var seederType = seedOrder[i];
                         var seeder = (IDataSeeder)ActivatorUtilities.CreateInstance(_serviceProvider, seederType);
-                        if (await dbContext.DataSeeds.FirstOrDefaultAsync(p => p.Id == seederType.FullName) == null)
+                        if (await unitOfWork.DataSeeds.FirstOrDefaultAsync(p => p.Id == seederType.FullName) == null)
                         {
                             try
                             {
                                 _logger.LogDebug($"Starting seeder: {seederType.FullName}");
-                                await seeder.SeedAsync(dbContext);
-                                dbContext.DataSeeds.Add(new DataSeed() { Id = seederType.FullName });
+                                await seeder.SeedAsync(unitOfWork);
+                                unitOfWork.DataSeeds.Add(new DataSeed() { Id = seederType.FullName });
                                 await unitOfWork.CommitAsync();
                                 _logger.LogDebug($"Finishing seeder: {seederType.FullName}");
                             }

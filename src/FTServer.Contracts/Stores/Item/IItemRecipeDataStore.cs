@@ -1,7 +1,7 @@
 ﻿using FTServer.Resources;
 using System.Collections.Generic;
 
-namespace FTServer.Contracts.Stores
+namespace FTServer.Contracts.Stores.Item
 {
     public interface IItemRecipeDataStore : IReadOnlyDictionary<int, ItemRecipe>
     {

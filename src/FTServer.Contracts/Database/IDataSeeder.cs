@@ -7,6 +7,6 @@ namespace FTServer.Contracts.Database
     /// </summary>
     public interface IDataSeeder
     {
-        Task SeedAsync(IDbContext context);
+        Task SeedAsync(IUnitOfWork uow);
     }
 }

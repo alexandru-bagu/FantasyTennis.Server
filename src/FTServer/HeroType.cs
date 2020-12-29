@@ -59,10 +59,27 @@ namespace FTServer
         {
             return hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value;
         }
-
         public static bool operator !=(HeroType hero1, HeroType hero2)
         {
             return !(hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value);
+        }
+
+        public static bool operator ==(HeroType hero1, int hero2)
+        {
+            return hero1 == (HeroType)hero2;
+        }
+        public static bool operator !=(HeroType hero1, int hero2)
+        {
+            return hero1 != (HeroType)hero2;
+        }
+
+        public static bool operator ==(int hero1, HeroType hero2)
+        {
+            return (HeroType)hero1 == hero2;
+        }
+        public static bool operator !=(int hero1, HeroType hero2)
+        {
+            return (HeroType)hero1 != hero2;
         }
 
         public override bool Equals(object obj)

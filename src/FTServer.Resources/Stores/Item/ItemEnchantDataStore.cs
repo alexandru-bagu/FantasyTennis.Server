@@ -1,10 +1,10 @@
 ﻿using Dandraka.XmlUtilities;
 using FTServer.Contracts.Resources;
-using FTServer.Contracts.Stores;
+using FTServer.Contracts.Stores.Item;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FTServer.Resources.Stores
+namespace FTServer.Resources.Stores.Item
 {
     public class ItemEnchantDataStore : Dictionary<int, ItemEnchant>, IItemEnchantDataStore
     {
