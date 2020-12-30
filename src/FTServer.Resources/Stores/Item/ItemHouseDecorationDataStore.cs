@@ -1,6 +1,7 @@
 ﻿using Dandraka.XmlUtilities;
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores.Item;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,8 +12,10 @@ namespace FTServer.Resources.Stores.Item
         private const string Resource = "Res/Script/Item/Item_HouseDeco.xml";
         private Dictionary<HouseDecorationKind, HashSet<int>> _byKind;
 
-        public ItemHouseDecorationDataStore(IResourceManager resourceManager)
+        public ItemHouseDecorationDataStore(IResourceManager resourceManager, 
+            ILogger<ItemHouseDecorationDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             foreach (dynamic houseDecoRes in resource.ItemList)
@@ -34,6 +37,7 @@ namespace FTServer.Resources.Stores.Item
                 Add(houseDeco.Index, houseDeco);
             }
             _byKind = new Dictionary<HouseDecorationKind, HashSet<int>>();
+            logger.LogInformation("loaded.");
         }
 
         public HashSet<int> ByKind(HouseDecorationKind kind)

@@ -1,6 +1,5 @@
-﻿using FTServer.Contracts.Network;
-using FTServer.Contracts.Services.Database;
-using FTServer.Database.Model;
+﻿using FTServer.Contracts.Game;
+using FTServer.Contracts.Network;
 using FTServer.Network;
 using FTServer.Network.Message.Character;
 using System.Threading.Tasks;
@@ -10,11 +9,11 @@ namespace FTServer.Authentication.Core.Network
     [NetworkMessageHandler(ReserveCharacterRequest.MessageId)]
     public class ReserveCharacterMessageHandler : INetworkMessageHandler<AuthenticationNetworkContext>
     {
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly ICharacterBuilder _characterBuilder;
 
-        public ReserveCharacterMessageHandler(IUnitOfWorkFactory unitOfWorkFactory)
+        public ReserveCharacterMessageHandler(ICharacterBuilder characterBuilder)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _characterBuilder = characterBuilder;
         }
 
         public async Task Process(INetworkMessage message, AuthenticationNetworkContext context)
@@ -28,17 +27,7 @@ namespace FTServer.Authentication.Core.Network
                 }
                 else
                 {
-                    var character = new Character();
-                    await using (var uow = _unitOfWorkFactory.Create())
-                    {
-                        character.Type = createCharacter.Type;
-                        character.IsCreated = false;
-                        character.NameChangeAllowed = false;
-                        character.AccountId = context.Account.Id;
-                        character.Level = 1;
-                        uow.Characters.Add(character);
-                        await uow.CommitAsync();
-                    }
+                    var character = await _characterBuilder.Create(context.Account.Id, createCharacter.Type);
                     await context.SendAsync(new ReserveCharacterResponse() { CharacterId = character.Id, Type = createCharacter.Type });
                 }
             }

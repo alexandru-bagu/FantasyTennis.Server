@@ -23,6 +23,7 @@ public static class IHostBuilderExtensions
                 services.Configure<CoreSettings>(context.Configuration);
                 services.AddSingleton<ICharacterStatValidationService, CharacterStatValidationService>();
                 services.AddSingleton<ICharacterEquipmentBuilder, CharacterEquipmentBuilder>();
+                services.AddSingleton<ICharacterBuilder, CharacterBuilder>();
                 services.AddSingleton<IUnmanagedMemoryService, UnmanagedMemoryService>();
             });
     }

@@ -1,6 +1,7 @@
 ﻿using Dandraka.XmlUtilities;
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores.Item;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,8 +12,10 @@ namespace FTServer.Resources.Stores.Item
         private const string Resource = "Res/Script/Item/Item_Enchant.xml";
         private Dictionary<EnchantKind, HashSet<int>> _byKind;
 
-        public ItemEnchantDataStore(IResourceManager resourceManager)
+        public ItemEnchantDataStore(IResourceManager resourceManager,
+            ILogger<ItemEnchantDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             foreach (dynamic enchantRes in resource.ItemList)
@@ -40,6 +43,7 @@ namespace FTServer.Resources.Stores.Item
                 Add(enchant.Index, enchant);
             }
             _byKind = new Dictionary<EnchantKind, HashSet<int>>();
+            logger.LogInformation("loaded.");
         }
 
         public HashSet<int> ByKind(EnchantKind kind)

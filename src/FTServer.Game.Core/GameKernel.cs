@@ -39,6 +39,7 @@ namespace FTServer.Game.Core
         {
             try
             {
+                _logger.LogInformation("Starting game server.");
                 if (await IsServerEnabled())
                 {
                     using (var scope = _serviceScopeFactory.CreateScope())

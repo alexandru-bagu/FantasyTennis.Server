@@ -10,7 +10,7 @@ namespace FTServer.Database.Model
         public bool Enabled { get; set; }
         public int Gold { get; set; }
         public int Type { get; set; }
-
+        [NotMapped] public HeroType HeroType { get => Type; set => Type = value; }
         public byte Strength { get; set; }
         public byte Stamina { get; set; }
         public byte Dexterity { get; set; }

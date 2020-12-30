@@ -37,6 +37,7 @@ namespace FTServer.Authentication.Core
         {
             try
             {
+                _logger.LogInformation("Starting authentication server.");
                 await ResetOnlinePlayers();
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {

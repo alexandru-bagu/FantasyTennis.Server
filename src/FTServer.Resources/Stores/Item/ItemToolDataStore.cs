@@ -1,6 +1,7 @@
 ﻿using Dandraka.XmlUtilities;
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores.Item;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace FTServer.Resources.Stores.Item
@@ -9,8 +10,10 @@ namespace FTServer.Resources.Stores.Item
     {
         private const string Resource = "Res/Script/Item/Item_Tools.xml";
 
-        public ItemToolDataStore(IResourceManager resourceManager)
+        public ItemToolDataStore(IResourceManager resourceManager,
+            ILogger<ItemToolDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             foreach (dynamic toolRes in resource.RecipeList)
@@ -26,6 +29,7 @@ namespace FTServer.Resources.Stores.Item
 
                 Add(tool.Index, tool);
             }
+            logger.LogInformation("loading...");
         }
     }
 }

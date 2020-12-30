@@ -1,6 +1,7 @@
 ﻿using Dandraka.XmlUtilities;
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores.Item;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,8 +13,10 @@ namespace FTServer.Resources.Stores.Item
         private Dictionary<int, HashSet<int>> _byType;
         private Dictionary<HeroType, HashSet<int>> _byHero;
 
-        public ItemPartDataStore(IResourceManager resourceManager)
+        public ItemPartDataStore(IResourceManager resourceManager,
+            ILogger<ItemPartDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             foreach (dynamic itemRes in resource.ItemList)
@@ -33,6 +36,7 @@ namespace FTServer.Resources.Stores.Item
             }
             _byType = new Dictionary<int, HashSet<int>>();
             _byHero = new Dictionary<HeroType, HashSet<int>>();
+            logger.LogInformation("loaded.");
         }
 
         public HashSet<int> ByHero(HeroType hero)

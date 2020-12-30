@@ -21,7 +21,7 @@ namespace FTServer.Network.Message.Shop
         public override void Deserialize(IUnmanagedMemoryReader reader)
         {
             base.Deserialize(reader);
-            Amount = reader.ReadInt32();
+            Amount = reader.ReadByte();
             Items = new PurchaseItem[Amount];
             for (int i = 0; i < Amount; i++)
             {

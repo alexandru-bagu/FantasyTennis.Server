@@ -2,6 +2,7 @@
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores;
 using FTServer.Resources.EmblemQuest;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,8 +19,11 @@ namespace FTServer.Resources.Stores
         public IReadOnlyDictionary<int, QuestDetail> QuestDetails => _questDetails;
         public IReadOnlyCollection<RewardItem> Rewards => _rewards;
 
-        public EmblemQuestDataStore(IResourceManager resourceManager, ITextDataStore textDataStore)
+        public EmblemQuestDataStore(IResourceManager resourceManager, 
+            ITextDataStore textDataStore,
+            ILogger<EmblemQuestDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             _quests = new Dictionary<int, Quest>();
@@ -29,6 +33,7 @@ namespace FTServer.Resources.Stores
             loadQuests(textDataStore, resource);
             loadQuestDetails(resource);
             loadRewards(resource);
+            logger.LogInformation("loaded.");
         }
 
         private void loadRewards(dynamic resource)

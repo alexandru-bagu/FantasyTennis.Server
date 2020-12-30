@@ -2,6 +2,7 @@
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores;
 using FTServer.Contracts.Stores.Item;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,8 +20,10 @@ namespace FTServer.Resources.Stores
             IItemPartDataStore itemPartDataStore,
             IItemHouseDecorationDataStore houseDecorationDataStore,
             IItemEnchantDataStore enchantDataStore,
-            IItemRecipeDataStore recipeDataStore)
+            IItemRecipeDataStore recipeDataStore,
+            ILogger<ShopItemDataStore> logger)
         {
+            logger.LogInformation("loading...");
             var resource = XmlSlurper.ParseText(resourceManager.ReadResource(Resource));
 
             var tmp = new Dictionary<int, ShopItem>();
@@ -73,6 +76,7 @@ namespace FTServer.Resources.Stores
             _houseDecorationDataStore = houseDecorationDataStore;
             _enchantDataStore = enchantDataStore;
             _recipeDataStore = recipeDataStore;
+            logger.LogInformation("loaded.");
         }
 
         public IEnumerable<ShopItem> Search(int categoryType, int partType, int heroType)
@@ -91,7 +95,6 @@ namespace FTServer.Resources.Stores
                     var set = _itemPartDataStore.ByTypeAndHero(partType, heroType);
                     list = list.Where(p => p.Item1 == 0 && set.Contains(p.Item0));
                 }
-                list = list.Where(p => p.Hero == heroType);
             }
             else if (categoryType == ShopCategoryType.HouseDecoration)
             {

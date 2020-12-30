@@ -2,6 +2,7 @@
 using FTServer.Contracts.Resources;
 using FTServer.Contracts.Stores;
 using FTServer.Resources.MapQuest;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,8 +26,10 @@ namespace FTServer.Resources.Stores
         public IReadOnlyDictionary<int, PlayerNpc> PlayerNpcs => _playerNpcs;
         public IReadOnlyDictionary<int, MonsterNpc> MonsterNpcs => _monsterNpcs;
 
-        public MapQuestDataStore(IResourceManager resourceManager)
+        public MapQuestDataStore(IResourceManager resourceManager,
+            ILogger<MapQuestDataStore> logger)
         {
+            logger.LogInformation("loading...");
             _globals = new List<Global>();
             _tutorials = new Dictionary<ushort, Tutorial>();
             _challenges = new Dictionary<ushort, TennisChallenge>();
@@ -42,6 +45,7 @@ namespace FTServer.Resources.Stores
             loadMiniGames(resource);
             loadPlayerNpcs(resource);
             loadMonsterNpcs(resource);
+            logger.LogInformation("loaded.");
         }
 
         private void loadGlobals(dynamic resource)

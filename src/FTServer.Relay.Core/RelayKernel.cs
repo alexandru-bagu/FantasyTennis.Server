@@ -37,6 +37,7 @@ namespace FTServer.Relay.Core
         {
             try
             {
+                _logger.LogInformation("Starting relay server.");
                 if (await IsServerEnabled())
                 {
                     using (var scope = _serviceScopeFactory.CreateScope())
