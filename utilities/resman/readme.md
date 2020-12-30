@@ -1,4 +1,4 @@
-Fantasy Tennis - Resource manager
-resman -d <input> <output>		- decrypt <input> into <output>
-resman -e <input> <output>		- encrypt <input> into <output>
-resman -a <input>				- decrypt/encrypt auto
+Fantasy Tennis - Resource manager<br>
+resman -d <input> <output>		- decrypt <input> into <output><br>
+resman -e <input> <output>		- encrypt <input> into <output><br>
+resman -a <input>				- decrypt/encrypt auto<br>
