@@ -1,5 +1,6 @@
 ﻿using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 
 namespace FTServer.Contracts.Database
@@ -22,5 +23,6 @@ namespace FTServer.Contracts.Database
 
         void Attach<T>(T entity);
         void Detach<T>(T entity);
+        ChangeTracker ChangeTracker { get; }
     }
 }

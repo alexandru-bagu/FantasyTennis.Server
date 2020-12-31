@@ -42,7 +42,7 @@ namespace FTServer.Resources.Stores.Item
         public HashSet<int> ByHero(HeroType hero)
         {
             if (!_byHero.TryGetValue(hero, out HashSet<int> set))
-                _byHero.Add(hero, set = Values.Where(p => p.Hero == hero).Select(p => p.Index).ToHashSet());
+                _byHero.Add(hero, set = Values.Where(p => p.Hero.Is(hero)).Select(p => p.Index).ToHashSet());
             return set;
         }
 
@@ -50,7 +50,7 @@ namespace FTServer.Resources.Stores.Item
         {
             var key = 1000 + type * 1000 + hero;
             if (!_byType.TryGetValue(key, out HashSet<int> set))
-                _byType.Add(key, set = Values.Where(p => p.Type == type && p.Hero == hero).Select(p => p.Index).ToHashSet());
+                _byType.Add(key, set = Values.Where(p => p.Type == type && p.Hero.Is(hero)).Select(p => p.Index).ToHashSet());
             return set;
         }
     }

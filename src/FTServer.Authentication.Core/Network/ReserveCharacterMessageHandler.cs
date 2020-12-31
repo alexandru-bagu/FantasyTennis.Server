@@ -21,7 +21,7 @@ namespace FTServer.Authentication.Core.Network
             if (await context.FaultyState(AuthenticationState.Online)) return;
             if (message is ReserveCharacterRequest createCharacter)
             {
-                if (createCharacter.Type != HeroType.Niki && createCharacter.Type != HeroType.LunLun)
+                if (!createCharacter.Type.IsStrict(HeroType.Niki) && !createCharacter.Type.IsStrict(HeroType.LunLun))
                 {
                     await context.SendAsync(new ReserveCharacterResponse());
                 }

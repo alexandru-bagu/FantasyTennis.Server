@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 public static class FriendshipExtensions
 {
-    public static async Task<List<FriendDto>> GetFriendships(this IUnitOfWork uow, int heroId)
+    public static async Task<ConcurrentList<FriendDto>> GetFriendships(this IUnitOfWork uow, int heroId)
     {
-        return (await uow.Friendships
+        return new ConcurrentList<FriendDto>((await uow.Friendships
             .Include(p => p.HeroOne.Account)
             .Where(p => p.HeroTwoId == heroId)
             .Select(p => new { Id = p.Id, Hero = p.HeroOne })
@@ -28,6 +28,6 @@ public static class FriendshipExtensions
                 ActiveServer = p.ActiveServerId ?? -1,
                 Type = p.Type
             })
-            .ToList();
+            .ToList());
     }
 }

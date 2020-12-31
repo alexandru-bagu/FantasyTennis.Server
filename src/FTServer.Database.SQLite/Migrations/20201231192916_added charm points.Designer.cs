@@ -3,14 +3,16 @@ using System;
 using FTServer.Database.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FTServer.Database.SQLite.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    partial class SQLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201231192916_added charm points")]
+    partial class addedcharmpoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

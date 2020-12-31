@@ -8,7 +8,7 @@ namespace FTServer.Core.Services.Game
         {
             if (level != 1) return false;
             if (strength + stamina + dexterity + willpower + statPoints - 60 != 5) return false;
-            if (type == HeroType.Niki || type == HeroType.LunLun)
+            if (type.Is(HeroType.Niki) || type.Is(HeroType.LunLun))
             {
                 if (strength < 15) return false;
                 if (stamina < 15) return false;
@@ -16,7 +16,7 @@ namespace FTServer.Core.Services.Game
                 if (willpower < 15) return false;
                 return true;
             }
-            if (type == HeroType.Dennis)
+            if (type.Is(HeroType.Dennis))
             {
                 if (strength < 10) return false;
                 if (stamina < 25) return false;
@@ -24,7 +24,7 @@ namespace FTServer.Core.Services.Game
                 if (willpower < 15) return false;
                 return true;
             }
-            if (type == HeroType.Lucy)
+            if (type.Is(HeroType.Lucy))
             {
                 if (strength < 25) return false;
                 if (stamina < 15) return false;
@@ -32,7 +32,7 @@ namespace FTServer.Core.Services.Game
                 if (willpower < 15) return false;
                 return true;
             }
-            if (type == HeroType.Shua)
+            if (type.Is(HeroType.Shua))
             {
                 if (strength < 10) return false;
                 if (stamina < 10) return false;
@@ -40,7 +40,7 @@ namespace FTServer.Core.Services.Game
                 if (willpower < 15) return false;
                 return true;
             }
-            if (type == HeroType.Pochi)
+            if (type.Is(HeroType.Pochi))
             {
                 if (strength < 5) return false;
                 if (stamina < 15) return false;
@@ -48,7 +48,7 @@ namespace FTServer.Core.Services.Game
                 if (willpower < 25) return false;
                 return true;
             }
-            if (type == HeroType.Al)
+            if (type.Is(HeroType.Al))
             {
                 if (strength < 10) return false;
                 if (stamina < 5) return false;

@@ -4,7 +4,7 @@ namespace FTServer
 {
     public class ShopPriceType
     {
-        public static ShopPriceType Mint { get; } = new ShopPriceType(0, "Mint");
+        public static ShopPriceType Ap { get; } = new ShopPriceType(0, "Mint");
         public static ShopPriceType Gold { get; } = new ShopPriceType(1, "Gold");
 
 
@@ -26,7 +26,7 @@ namespace FTServer
         {
             value = value.ToLowerInvariant();
             if (value == "gold") return Gold;
-            if (value == "mint") return Mint;
+            if (value == "mint") return Ap;
             throw new Exception($"Unknown value for ShopPriceType: {value}");
         }
 
@@ -36,7 +36,7 @@ namespace FTServer
         public static implicit operator ShopPriceType(int value)
         {
             if (Gold._value == value) return Gold;
-            if (Mint._value == value) return Mint;
+            if (Ap._value == value) return Ap;
             throw new Exception($"Unknown value for ShopPriceType: {value}");
         }
     }

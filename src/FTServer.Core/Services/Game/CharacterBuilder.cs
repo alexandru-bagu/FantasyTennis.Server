@@ -23,6 +23,7 @@ namespace FTServer.Core.Services.Game
             character.IsCreated = false;
             character.NameChangeAllowed = false;
             character.Level = 1;
+            character.PocketSize = 150;
             await builder(character);
             uow.Characters.Add(character);
             await uow.CommitAsync();

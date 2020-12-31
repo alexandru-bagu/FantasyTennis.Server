@@ -1,10 +1,11 @@
 ﻿using FTServer.Contracts.Database;
 using FTServer.Database.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FTServer.Database.Core
@@ -29,8 +30,8 @@ namespace FTServer.Database.Core
         public DbSet<Friendship> Friendships => _databaseContext.Friendships;
         public DbSet<TutorialProgress> TutorialProgress => _databaseContext.TutorialProgress;
         public DbSet<ChallengeProgress> ChallengeProgress => _databaseContext.ChallengeProgress;
+        ChangeTracker IDbContext.ChangeTracker => _databaseContext.ChangeTracker;
 
-        private IDbContextTransaction _transaction;
 
         public UnitOfWork(ILogger<UnitOfWork> logger, IRawDbContext databaseContext, IServiceScope serviceScope
             /* we keep `IServiceScope` referenced to prevent GC from removing it before we dispose of it*/)
@@ -38,7 +39,6 @@ namespace FTServer.Database.Core
             _logger = logger;
             _databaseContext = databaseContext;
             _serviceScope = serviceScope;
-            _transaction = _databaseContext.Database.BeginTransaction();
         }
 
         public async Task CommitAsync()
@@ -47,8 +47,6 @@ namespace FTServer.Database.Core
             try
             {
                 await _databaseContext.SaveChangesAsync();
-                await _transaction.CommitAsync();
-                _transaction = await _databaseContext.Database.BeginTransactionAsync();
             }
             catch (Exception ex)
             {
@@ -61,14 +59,14 @@ namespace FTServer.Database.Core
             }
         }
 
-        public async Task AbortAsync()
+        public Task AbortAsync()
         {
             _logger.LogTrace("Begin AbortAsync");
             try
             {
-                await _transaction.RollbackAsync();
-                await _databaseContext.Database.RollbackTransactionAsync();
-                _transaction = await _databaseContext.Database.BeginTransactionAsync();
+                DatabaseContext.ChangeTracker.Entries()
+                 .Where(e => e.Entity != null).ToList()
+                 .ForEach(e => e.State = EntityState.Detached);
             }
             catch (Exception ex)
             {
@@ -79,6 +77,7 @@ namespace FTServer.Database.Core
             {
                 _logger.LogTrace("End AbortAsync");
             }
+            return Task.CompletedTask;
         }
 
         public void Dispose()
@@ -86,8 +85,6 @@ namespace FTServer.Database.Core
             _logger.LogTrace("Begin Dispose");
             try
             {
-                _transaction.Rollback();
-                _transaction.Dispose();
                 _databaseContext.Dispose();
                 _serviceScope.Dispose();
             }
@@ -107,8 +104,6 @@ namespace FTServer.Database.Core
             _logger.LogTrace("Begin DisposeAsync");
             try
             {
-                await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
                 await _databaseContext.DisposeAsync();
                 _serviceScope.Dispose();
             }

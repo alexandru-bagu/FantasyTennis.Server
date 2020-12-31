@@ -56,16 +56,8 @@ namespace FTServer.Resources.Stores
                 shopItem.GoldBack = itemRes.GoldBack;
                 shopItem.EnableParcel = itemRes.EnableParcel == 1;
                 shopItem.Hero = (int)itemRes.Char;
-                shopItem.Item0 = itemRes.Item0;
-                shopItem.Item1 = itemRes.Item1;
-                shopItem.Item2 = itemRes.Item2;
-                shopItem.Item3 = itemRes.Item3;
-                shopItem.Item4 = itemRes.Item4;
-                shopItem.Item5 = itemRes.Item5;
-                shopItem.Item6 = itemRes.Item6;
-                shopItem.Item7 = itemRes.Item7;
-                shopItem.Item8 = itemRes.Item8;
-                shopItem.Item9 = itemRes.Item9;
+                shopItem.Items = new[] { itemRes.Item0, itemRes.Item1, itemRes.Item2, itemRes.Item3, itemRes.Item4, itemRes.Item5, itemRes.Item6, itemRes.Item7, itemRes.Item8, itemRes.Item9 }
+                    .Select(p => (int)p).Where(p => p != 0).ToArray();
                 tmp.Add(shopItem.Index, shopItem);
             }
 

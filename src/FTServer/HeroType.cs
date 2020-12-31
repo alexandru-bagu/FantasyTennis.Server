@@ -55,36 +55,27 @@ namespace FTServer
             throw new Exception($"Unknown value for HeroType: {value}");
         }
 
-        public static bool operator ==(HeroType hero1, HeroType hero2)
+        /// <summary>
+        /// Matches `HeroType.All` or specific Hero Type
+        /// </summary>
+        public bool Is(HeroType heroType)
         {
-            return hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value;
-        }
-        public static bool operator !=(HeroType hero1, HeroType hero2)
-        {
-            return !(hero1._value == All._value || hero2._value == All._value || hero1._value == hero2._value);
-        }
-
-        public static bool operator ==(HeroType hero1, int hero2)
-        {
-            return hero1 == (HeroType)hero2;
-        }
-        public static bool operator !=(HeroType hero1, int hero2)
-        {
-            return hero1 != (HeroType)hero2;
+            return heroType._value == _value ||
+                heroType._value == All._value ||
+                All._value == _value;
         }
 
-        public static bool operator ==(int hero1, HeroType hero2)
+        /// <summary>
+        /// Matches specific Hero Type
+        /// </summary>
+        public bool IsStrict(HeroType heroType)
         {
-            return (HeroType)hero1 == hero2;
-        }
-        public static bool operator !=(int hero1, HeroType hero2)
-        {
-            return (HeroType)hero1 != hero2;
+            return this == heroType;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is HeroType hero) return hero == this;
+            if (obj is HeroType hero) return hero.Is(this);
             return false;
         }
 

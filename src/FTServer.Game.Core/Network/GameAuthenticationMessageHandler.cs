@@ -1,8 +1,10 @@
 ﻿using FTServer.Contracts.Network;
 using FTServer.Contracts.Services.Database;
+using FTServer.Database.Model;
 using FTServer.Network;
 using FTServer.Network.Message.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +56,7 @@ namespace FTServer.Game.Core.Network
                             context.State = GameState.SynchronizeExperience;
                             context.Character = character;
                             context.Home = await uow.Homes.Where(p => p.CharacterId == context.Character.Id).SingleAsync();
-                            context.Items = await uow.Items.Where(p => p.CharacterId == context.Character.Id).ToListAsync();
+                            context.Items = new ConcurrentList<Item>(await uow.Items.Where(p => p.CharacterId == context.Character.Id).ToListAsync());
                             character.Account.Online = true;
                             character.Account.ActiveServerId = _currentServer.Id;
                             await uow.CommitAsync();
